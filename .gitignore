@@ -1,13 +1,12 @@
-/.settings
-/target
 /.classpath
 /.project
-/alf_data_dev
-/alfresco
-/share
-/solr
-/runner
-/bin
-
+/*
+!/amp/src
+!/amp/alfresco
+!/alfresco/src
+!/share/src
+!/sahre/META-INF
+!/docs
+!/scripts
 .DS_Store
 

@@ -71,11 +71,9 @@
     </repositories>
   <modules>
     <module>amp</module>
-<!--
     <module>alfresco</module>
     <module>solr</module>
     <module>share</module>
     <module>runner</module>
--->
   </modules>
 </project>
