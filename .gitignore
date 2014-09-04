@@ -1,0 +1,13 @@
+/.settings
+/target
+/.classpath
+/.project
+/alf_data_dev
+/alfresco
+/share
+/solr
+/runner
+/bin
+
+.DS_Store
+
