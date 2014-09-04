@@ -1,0 +1,6 @@
+14:07:43,184 WARN  [org.apache.solr.core.SolrCore] [archive] Solr index directory '/Users/fegor/Documents/workspace/alfviral/solr/solr_home/archive/SpacesStore/index' doesn't exist. Creating new index...
+14:07:43,374 WARN  [org.apache.solr.handler.component.SpellCheckComponent] No queryConverter defined, using default converter
+14:07:44,207 WARN  [org.apache.solr.core.SolrCore] [alfresco] Solr index directory '/Users/fegor/Documents/workspace/alfviral/solr/solr_home/workspace/SpacesStore/index' doesn't exist. Creating new index...
+14:07:44,217 WARN  [org.apache.solr.handler.component.SpellCheckComponent] No queryConverter defined, using default converter
+14:18:46,249 WARN  [org.apache.solr.handler.component.SpellCheckComponent] No queryConverter defined, using default converter
+14:18:47,508 WARN  [org.apache.solr.handler.component.SpellCheckComponent] No queryConverter defined, using default converter
