@@ -1,12 +1,13 @@
-/.classpath
-/.project
-/.settings
+*.classpath
+*.project
+*.settings
 /alf_data_dev
 /bin
 /amp/target
 /alfresco/target
 /runner
 /share/target
-/solr/target
+/solr
+/lib
 .DS_Store
 
