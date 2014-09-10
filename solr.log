@@ -4,3 +4,7 @@
 14:07:44,217 WARN  [org.apache.solr.handler.component.SpellCheckComponent] No queryConverter defined, using default converter
 14:18:46,249 WARN  [org.apache.solr.handler.component.SpellCheckComponent] No queryConverter defined, using default converter
 14:18:47,508 WARN  [org.apache.solr.handler.component.SpellCheckComponent] No queryConverter defined, using default converter
+18:31:06,441 WARN  [org.apache.solr.handler.component.SpellCheckComponent] No queryConverter defined, using default converter
+18:31:07,786 WARN  [org.apache.solr.handler.component.SpellCheckComponent] No queryConverter defined, using default converter
+20:40:29,990 WARN  [org.apache.solr.handler.component.SpellCheckComponent] No queryConverter defined, using default converter
+20:40:30,915 WARN  [org.apache.solr.handler.component.SpellCheckComponent] No queryConverter defined, using default converter
