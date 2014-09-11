@@ -9,6 +9,8 @@
 /share/target
 /solr/target
 /solr/solr_home
+solr/solr_home
+solr_home
 .DS_Store
 
 
