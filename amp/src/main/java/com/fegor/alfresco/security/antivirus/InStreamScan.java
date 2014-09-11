@@ -65,13 +65,17 @@ public class InStreamScan implements VirusScanMode {
 		/*
 		 * create socket
 		 */
+		if (logger.isDebugEnabled()) {
+			logger.debug(getClass().getName() + "Connect to " + host + ":" + port);
+		}
+		
 		Socket socket = new Socket();
-		socket.connect(new InetSocketAddress(this.host, this.port));
+		socket.connect(new InetSocketAddress(host, port));
 
 		try {
-			socket.setSoTimeout(this.timeout);
+			socket.setSoTimeout(timeout);
 		} catch (SocketException e) {
-			logger.error("Error in timeout: " + this.timeout + "ms", e);
+			logger.error("Error in timeout: " + timeout + "ms", e);
 		}
 
 		DataOutputStream dataOutputStream = null;
@@ -79,12 +83,20 @@ public class InStreamScan implements VirusScanMode {
 
 		String res = null;
 		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug(getClass().getName() + "Send zINSTREAM");
+			}
+			
 			dataOutputStream = new DataOutputStream(socket.getOutputStream());
 			dataOutputStream.writeBytes("zINSTREAM\0");
 
+			if (logger.isDebugEnabled()) {
+				logger.debug(getClass().getName() + "Send stream for  " + data.length + " bytes");
+			}
+
 			while (i < data.length) {
-				if (i + this.chunk_size >= data.length) {
-					this.chunk_size = data.length - i;
+				if (i + chunk_size >= data.length) {
+					chunk_size = data.length - i;
 				}
 				dataOutputStream.writeInt(chunk_size);
 				dataOutputStream.write(data, i, chunk_size);
@@ -97,8 +109,13 @@ public class InStreamScan implements VirusScanMode {
 
 			bufferedReader = new BufferedReader(new InputStreamReader(
 					socket.getInputStream(), "ASCII"));
-
+				
 			res = bufferedReader.readLine();
+			
+			if (logger.isDebugEnabled()) {
+				logger.debug(getClass().getName() + "Result of scan is:  " + res);
+			}
+			
 		} finally {
 			if (bufferedReader != null)
 				bufferedReader.close();
@@ -113,7 +130,7 @@ public class InStreamScan implements VirusScanMode {
 		 */
 		if (!res.trim().equals("stream: OK")) {
 			result = 1;
-			this.addAspect();
+			addAspect();
 		}
 
 		return result;
@@ -126,7 +143,7 @@ public class InStreamScan implements VirusScanMode {
 	 */
 	@Override
 	public int rescan() throws IOException {
-		return this.scan();
+		return scan();
 	}
 
 	/*
@@ -144,15 +161,19 @@ public class InStreamScan implements VirusScanMode {
 	 * Add aspect Scaned From ClamAV is not assigned
 	 */
 	private void addAspect() {
-
-		if (!this.nodeService.hasAspect(this.nodeRef,
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug(getClass().getName() + "Adding aspect if not exist");
+		}
+		
+		if (!nodeService.hasAspect(nodeRef,
 				AlfviralModel.ASPECT_SCANNED_FROM_CLAMAV)) {
-			this.nodeService.addAspect(this.nodeRef,
+			nodeService.addAspect(nodeRef,
 					AlfviralModel.ASPECT_SCANNED_FROM_CLAMAV, null);
 		}
 
 		if (logger.isInfoEnabled()) {
-			logger.info(this.getClass().getName()
+			logger.info(getClass().getName()
 					+ ": [Aspect SCANNED_FROM_CLAMAV assigned for "
 					+ nodeRef.getId() + "]");
 		}

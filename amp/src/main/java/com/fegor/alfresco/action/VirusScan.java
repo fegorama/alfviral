@@ -206,8 +206,10 @@ public class VirusScan extends ActionExecuterAbstractBase {
 			 * if res not zero then infected!!
 			 */
 			if (res != 0) {
-				logger.info(this.getClass().getName() + ": [ALERT File: "
-						+ contentReader.getContentUrl() + " is infected!]");
+				if (logger.isInfoEnabled() || logger.isDebugEnabled()) {
+					logger.info(this.getClass().getName() + ": [ALERT File: "
+							+ contentReader.getContentUrl() + " is infected!]");
+				}
 				this.addAspect(nodeRef);
 			} else {
 				if (logger.isDebugEnabled())
