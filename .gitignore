@@ -8,9 +8,13 @@
 /runner
 /share/target
 /solr/target
+<<<<<<< Updated upstream
 /solr/solr_home
 solr/solr_home
 solr_home
+=======
+/*.log
+>>>>>>> Stashed changes
 .DS_Store
 
 
