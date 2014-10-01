@@ -57,7 +57,16 @@ public class VirusTotalScan implements VirusScanMode {
 	private JSONObject jso;
 	private JSONObject jsoReport;
 
+	/*
+	 * Constructor
+	 */
+	public VirusTotalScan() {
+		
+	}
+	
 	/**
+	 * Constructor
+	 * 
 	 * @param key
 	 * @param url
 	 */

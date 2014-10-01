@@ -14,6 +14,8 @@
  */
 package com.fegor.alfresco.behavior;
 
+import java.util.List;
+
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.content.ContentServicePolicies;
 import org.alfresco.repo.policy.Behaviour;
@@ -25,10 +27,14 @@ import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.util.ApplicationContextHelper;
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
 
 import com.fegor.alfresco.action.VirusScan;
 import com.fegor.alfresco.model.AlfviralModel;
+import com.fegor.alfresco.security.antivirus.InStreamScan;
 
 /**
  * Integrates antivirus scanning documents for alfresco
@@ -46,6 +52,7 @@ public class OnUpdateReadScan implements
 	private final Logger logger = Logger.getLogger(OnUpdateReadScan.class);
 
 	private NodeService nodeService;
+	private String mode;
 
 	/*
 	 * behaviours
@@ -71,7 +78,7 @@ public class OnUpdateReadScan implements
 	public void init() {
 		if (logger.isDebugEnabled())
 			logger.debug(this.getClass().getName() + ": [init]");
-
+		
 		// create behavior and binding for updates
 		if (this.on_update) {
 			this.onContentUpdate = new JavaBehaviour(this, "onContentUpdate",
@@ -143,7 +150,7 @@ public class OnUpdateReadScan implements
 	 * Visualize message "loaded"
 	 */
 	public void loaded() {
-		logger.info("Alfresco Virus Alert AMP has been loaded in the behaviour");
+		logger.info(this.getClass().getName() + " Alfresco Virus Alert AMP has been loaded in the behaviour");
 	}
 
 	public void setPolicyComponent(PolicyComponent policyComponent) {
@@ -176,5 +183,12 @@ public class OnUpdateReadScan implements
 	 */
 	public void setOnRead(boolean on_read) {
 		this.on_read = on_read;
+	}
+	
+	/**
+	 * @param mode
+	 */
+	public void setMode(String mode) {
+		this.mode = mode;
 	}
 }

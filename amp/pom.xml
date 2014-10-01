@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.fegor.alfresco</groupId>
 		<artifactId>alfviral</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.3.1-SNAPSHOT</version>
 	</parent>
 
 	<!-- Following dependencies are needed for compiling Java code in src/main/java; 
@@ -29,7 +29,7 @@
 			<version>4.2.e</version>
 			<classifier>classes</classifier>
 			<scope>system</scope>
-			<systemPath>C:/Users/Fernando/.m2/repository/org/alfresco/alfresco-web-client/4.2.e/alfresco-web-client-4.2.e.jar</systemPath>
+			<systemPath>${user.home}/.m2/repository/org/alfresco/alfresco-web-client/4.2.e/alfresco-web-client-4.2.e.jar</systemPath>
 		</dependency>		
 	</dependencies>
 

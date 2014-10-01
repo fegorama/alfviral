@@ -39,7 +39,7 @@
 			<value>${alfviral.timeout}</value>
 		</property>
         <property name="chunkSize">
-            <value>1024</value>
+            <value>${alfviral.chunkSize}</value>
         </property>			
         <property name="key">
             <value>${vt.key}</value>

@@ -164,7 +164,7 @@ public class VirusScan extends ActionExecuterAbstractBase {
 					inStreamScan.setTimeout(this.timeout);
 					inStreamScan.setNodeService(this.nodeService);
 					inStreamScan.setNodeRef(nodeRef);
-					inStreamScan.setChunk_size(this.chunk_size);
+					inStreamScan.setChunkSize(this.chunk_size);
 					res = inStreamScan.scan();
 
 				} catch (ContentIOException e) {

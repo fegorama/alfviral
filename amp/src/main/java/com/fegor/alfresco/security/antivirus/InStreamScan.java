@@ -39,9 +39,9 @@ public class InStreamScan implements VirusScanMode {
 	private final Logger logger = Logger.getLogger(InStreamScan.class);
 
 	private byte[] data;
-	private int chunk_size = 4096;
-	private int port;
-	private String host;
+	private int chunkSize = 4096;
+	private static int port;
+	private static String host;
 	private int timeout;
 	private NodeService nodeService;
 	private NodeRef nodeRef;
@@ -52,6 +52,41 @@ public class InStreamScan implements VirusScanMode {
 	public InStreamScan() {
 	}
 
+	/**
+	 * Test connection
+	 * 
+	 * @return
+	 */
+	public boolean testConnection() {
+		boolean result = true;
+		
+		logger.info(getClass().getName() + "Testing connect to " + host.toString() + ":" + port);
+		Socket socket = new Socket();
+		try {
+			socket.connect(new InetSocketAddress(host, port));
+		} catch (IOException ioe) {
+			logger.error(getClass().getName() + "Error connecting to " + host.toString() + ":" + port);
+			ioe.printStackTrace();
+			result = false;
+		} finally {
+			if (socket.isConnected()) {
+				try {
+					socket.close();
+				} catch (IOException e) {
+					logger.error(getClass().getName() + "Error closing to " + host.toString() + ":" + port);
+					e.printStackTrace();
+					result = false;
+				}
+			}
+		}
+		
+		if (result == true) {
+			logger.info(getClass().getName() + "Connect to INSTREAM is OK");
+		}
+		
+		return result;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -95,12 +130,12 @@ public class InStreamScan implements VirusScanMode {
 			}
 
 			while (i < data.length) {
-				if (i + chunk_size >= data.length) {
-					chunk_size = data.length - i;
+				if (i + chunkSize >= data.length) {
+					chunkSize = data.length - i;
 				}
-				dataOutputStream.writeInt(chunk_size);
-				dataOutputStream.write(data, i, chunk_size);
-				i += chunk_size;
+				dataOutputStream.writeInt(chunkSize);
+				dataOutputStream.write(data, i, chunkSize);
+				i += chunkSize;
 			}
 
 			dataOutputStream.writeInt(0);
@@ -204,8 +239,8 @@ public class InStreamScan implements VirusScanMode {
 	/**
 	 * @param chunk_size
 	 */
-	public void setChunk_size(int chunk_size) {
-		this.chunk_size = chunk_size;
+	public void setChunkSize(int chunkSize) {
+		this.chunkSize = chunkSize;
 	}
 
 	/**

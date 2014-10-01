@@ -2,6 +2,19 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 
 <beans>
-	<import resource="classpath:alfresco/module/${project.artifactId}/bootstrap/*-context.xml" />
-	<import resource="classpath:alfresco/module/${project.artifactId}/context/*-context.xml" />
+	<import
+		resource="classpath:alfresco/module/${project.artifactId}/bootstrap/bootstrap-context.xml" />
+	<import
+		resource="classpath:alfresco/module/${project.artifactId}/context/antivirus-context.xml" />
+	<import
+		resource="classpath:alfresco/module/${project.artifactId}/context/actions-context.xml" />
+	<import
+		resource="classpath:alfresco/module/${project.artifactId}/context/behaviour-context.xml" />
+	<import
+		resource="classpath:alfresco/module/${project.artifactId}/context/model-context.xml" />
+	<import
+		resource="classpath:alfresco/module/${project.artifactId}/context/scheduled-action-services-context.xml" />
+	<import
+		resource="classpath:alfresco/module/${project.artifactId}/context/webclient-context.xml" />
+
 </beans>
