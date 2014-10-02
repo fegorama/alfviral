@@ -14,6 +14,7 @@ solr/solr_home
 solr_home
 =======
 /*.log
+*.log.*
 >>>>>>> Stashed changes
 .DS_Store
 
