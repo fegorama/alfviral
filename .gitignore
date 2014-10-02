@@ -1,6 +1,6 @@
-/.classpath
-/.project
-/.settings
+.classpath
+.project
+.settings
 /alf_data_dev
 /bin
 /amp/target
@@ -8,14 +8,10 @@
 /runner
 /share/target
 /solr/target
-<<<<<<< Updated upstream
 /solr/solr_home
 solr/solr_home
 solr_home
-=======
-/*.log
-*.log.*
->>>>>>> Stashed changes
+*.log*
 .DS_Store
 
 
