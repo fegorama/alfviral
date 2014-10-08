@@ -34,6 +34,7 @@
 			<aspect name="ava:scanned_from_clamav" display-label-id="alfviral.label.scanned.from.clamav" />
             <aspect name="ava:scanned_from_command" display-label-id="alfviral.label.scanned.from.command" />
             <aspect name="ava:scanned_from_virustotal" display-label-id="alfviral.label.scanned.from.virustotal" />
+            <aspect name="ava:scanned_from_icap" display-label-id="alfviral.label.scanned.from.icap" />
 		</aspects>
 	</config>
 

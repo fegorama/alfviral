@@ -42,7 +42,10 @@
         </aspect>
 		<aspect name="ava:scanned_from_clamav">
             <title>Scannned from ClamAV</title>
-        </aspect>
+        </aspect>      
+        <aspect name="ava:scanned_from_icap">
+            <title>Scannned from ICAP</title>
+        </aspect> 
 		<aspect name="ava:scanned_from_virustotal">
 			<title>Scannned from VirusTotal</title>
 			<properties>

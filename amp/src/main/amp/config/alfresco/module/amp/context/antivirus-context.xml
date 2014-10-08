@@ -51,4 +51,25 @@
 			<value>${vt.url}</value>
 		</property>
 	</bean>
+	
+    <bean id="alfviral.icapscan" class="com.fegor.alfresco.security.antivirus.ICAPScan">
+        <property name="nodeService">
+            <ref bean="nodeService" />
+        </property>
+        <property name="host">
+            <value>${alfviral.icap.host}</value>
+        </property>
+        <property name="port">
+            <value>${alfviral.icap.port}</value>
+        </property>
+        <property name="service">
+            <value>${alfviral.icap.service}</value>
+        </property>        
+        <property name="timeout">
+            <value>${alfviral.timeout}</value>
+        </property>
+        <property name="chunkSize">
+            <value>${alfviral.chunkSize}</value>
+        </property>
+    </bean>	
 </beans>

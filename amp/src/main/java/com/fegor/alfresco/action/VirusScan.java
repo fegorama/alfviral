@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 
 import com.fegor.alfresco.model.AlfviralModel;
 import com.fegor.alfresco.security.antivirus.CommandScan;
+import com.fegor.alfresco.security.antivirus.ICAPScan;
 import com.fegor.alfresco.security.antivirus.InStreamScan;
 import com.fegor.alfresco.security.antivirus.VirusTotalScan;
 
@@ -77,7 +78,14 @@ public class VirusScan extends ActionExecuterAbstractBase {
 	 */
 	private String vt_key;
 	private String vt_url;
-
+	
+	/*
+	 * for mode ICAP
+	 */
+	private String ICAPHost;
+	private int ICAPPort;
+	private String ICAPService;
+	
 	/*
 	 * Generic
 	 */
@@ -195,8 +203,36 @@ public class VirusScan extends ActionExecuterAbstractBase {
 							+ ". ¿Is closed?: " + contentReader.isClosed());
 				} catch (IOException e) {
 					logger.error("Error in virustotal operation.", e);
+				}		
+			} 
+			/*
+			 * if mode is ICAP
+			 */
+			else if (mode.toUpperCase().equals("ICAP")) {
+				try {
+					ICAPScan icapScan = new ICAPScan();
+					icapScan.setData(contentReader.getContentString()
+							.getBytes());
+					icapScan.setHost(this.ICAPHost);
+					icapScan.setPort(this.ICAPPort);					
+					icapScan.setNodeService(this.nodeService);
+					icapScan.setNodeRef(nodeRef);
+					icapScan.setService(this.ICAPService);
+					res = icapScan.scan();
+
+				} catch (ContentIOException e) {
+					logger.info("Not found content for nodeRef: "
+							+ nodeRef.getId() + " of "
+							+ contentReader.getContentUrl()
+							+ ". ¿Is closed?: " + contentReader.isClosed());
+				} catch (IOException e) {
+					logger.error("Error in icap operation.", e);
 				}
-			} else {
+			}			
+			/*
+			 * if none
+			 */
+			else {
 				if (logger.isDebugEnabled())
 					logger.info(this.getClass().getName()
 							+ ": [No config action: {COMMAND|INSTREAM|VIRUSTOTAL}]");
@@ -327,5 +363,26 @@ public class VirusScan extends ActionExecuterAbstractBase {
 	 */
 	public void setFileExceptions(String file_exceptions) {
 		this.file_exceptions = file_exceptions;
+	}
+
+	/**
+	 * @param iCAPHost
+	 */
+	public void setICAPHost(String ICAPHost) {
+		this.ICAPHost = ICAPHost;
+	}
+
+	/**
+	 * @param iCAPPort
+	 */
+	public void setICAPPort(int ICAPPort) {
+		this.ICAPPort = ICAPPort;
+	}
+
+	/**
+	 * @param ICAPService
+	 */
+	public void setICAPService(String ICAPService) {
+		this.ICAPService = ICAPService;
 	}
 }

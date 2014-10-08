@@ -79,6 +79,7 @@
 				<aspect name="ava:scanned_from_command" />
 				<aspect name="ava:scanned_from_instream" />
 				<aspect name="ava:scanned_from_virustotal" />
+                <aspect name="ava:scanned_from_icap" />			
 			</visible>
 
 			<addable>

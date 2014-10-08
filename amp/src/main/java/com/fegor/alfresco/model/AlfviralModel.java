@@ -21,7 +21,8 @@ public interface AlfviralModel {
 	public static final QName ASPECT_SCANNED_FROM_VIRUSTOTAL = QName
 			.createQName(NAMESPACE_ALFVIRAL_CONTENT_MODEL,
 					"scanned_from_virustotal");
-
+	public static final QName ASPECT_SCANNED_FROM_ICAP = QName.createQName(
+			NAMESPACE_ALFVIRAL_CONTENT_MODEL, "scanned_from_icap");
 	/*
 	 * Properties
 	 */
