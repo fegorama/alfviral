@@ -3,7 +3,7 @@ package com.fegor.alfresco.model;
 import org.alfresco.service.namespace.QName;
 
 public interface AlfviralModel {
-
+	
 	/*
 	 * Namespace model
 	 */

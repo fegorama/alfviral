@@ -5,16 +5,5 @@
 	<import
 		resource="classpath:alfresco/module/${project.artifactId}/bootstrap/bootstrap-context.xml" />
 	<import
-		resource="classpath:alfresco/module/${project.artifactId}/context/antivirus-context.xml" />
-	<import
-		resource="classpath:alfresco/module/${project.artifactId}/context/actions-context.xml" />
-	<import
-		resource="classpath:alfresco/module/${project.artifactId}/context/behaviour-context.xml" />
-	<import
-		resource="classpath:alfresco/module/${project.artifactId}/context/model-context.xml" />
-	<import
-		resource="classpath:alfresco/module/${project.artifactId}/context/scheduled-action-services-context.xml" />
-	<import
-		resource="classpath:alfresco/module/${project.artifactId}/context/webclient-context.xml" />
-
+		resource="classpath:alfresco/module/${project.artifactId}/context/alfviral-context.xml" />
 </beans>

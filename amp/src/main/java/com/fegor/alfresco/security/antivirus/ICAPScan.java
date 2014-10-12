@@ -53,7 +53,7 @@ public class ICAPScan implements VirusScanMode {
 	/**
 	 * Test connection
 	 * 
-	 * @return
+	 * @return test of connection
 	 */
 	public boolean testConnection() {
 		boolean result = true;
@@ -85,6 +85,22 @@ public class ICAPScan implements VirusScanMode {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.fegor.alfresco.security.antivirus.VirusScanMode#scan(org.alfresco.service.cmr.repository.NodeRef)
+	 */
+	@Override
+	public int scan(NodeRef nodeRef) {
+		int res = 0;
+		this.nodeRef = nodeRef;
+		try {
+			res = scan();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -98,9 +114,6 @@ public class ICAPScan implements VirusScanMode {
 		InputStream inputStream = null;
 		
 		try { 
-			/*
-			 * Connecting...
-			 */
 			if (logger.isDebugEnabled()) {
 				logger.debug(getClass().getName() + "Connect to " + host + ":" + port);
 			}
@@ -202,12 +215,6 @@ public class ICAPScan implements VirusScanMode {
 	}
 
 	/**
-	 * @param chunk_size
-	 */
-	public void setChunkSize(int chunkSize) {
-	}
-
-	/**
 	 * @param port
 	 */
 	public void setPort(int port) {
@@ -227,11 +234,4 @@ public class ICAPScan implements VirusScanMode {
 	public void setService(String service) {
 		this.service = service;
 	}
-	
-	/**
-	 * @param timeout
-	 */
-	public void setTimeout(int timeout) {
-	}
-
 }

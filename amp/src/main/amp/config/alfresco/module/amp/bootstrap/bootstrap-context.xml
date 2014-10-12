@@ -17,7 +17,12 @@
                         <prop key="uuidBinding">UPDATE_EXISTING</prop>
                         <prop key="path">/${spaces.company_home.childname}/${spaces.dictionary.childname}/${spaces.scripts.childname}</prop>
                         <prop key="location">alfresco/module/${project.artifactId}/bootstrap/alfviral-scripts.acp</prop>
-                    </props>    
+                    </props>
+                    <props>
+                        <prop key="uuidBinding">UPDATE_EXISTING</prop>
+                        <prop key="path">/${spaces.company_home.childname}/${spaces.dictionary.childname}/${spaces.templates.email.childname}</prop>
+                        <prop key="location">alfresco/module/${project.artifactId}/bootstrap/alfviral-templates-email.acp</prop>
+                    </props>  
 			</list>
 		</property>
 	</bean>

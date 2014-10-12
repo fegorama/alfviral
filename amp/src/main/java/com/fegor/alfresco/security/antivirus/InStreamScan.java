@@ -55,7 +55,7 @@ public class InStreamScan implements VirusScanMode {
 	/**
 	 * Test connection
 	 * 
-	 * @return
+	 * @return test of connection
 	 */
 	public boolean testConnection() {
 		boolean result = true;
@@ -85,6 +85,22 @@ public class InStreamScan implements VirusScanMode {
 		}
 		
 		return result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.fegor.alfresco.security.antivirus.VirusScanMode#scan(org.alfresco.service.cmr.repository.NodeRef)
+	 */
+	@Override
+	public int scan(NodeRef nodeRef) {
+		int res = 0;
+		this.nodeRef = nodeRef;
+		try {
+			res = scan();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res;
 	}
 	
 	/*
@@ -237,7 +253,7 @@ public class InStreamScan implements VirusScanMode {
 	}
 
 	/**
-	 * @param chunk_size
+	 * @param chunkSize
 	 */
 	public void setChunkSize(int chunkSize) {
 		this.chunkSize = chunkSize;
