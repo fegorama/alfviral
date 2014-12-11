@@ -29,7 +29,7 @@
 			<version>4.2.e</version>
 			<classifier>classes</classifier>
 			<scope>system</scope>
-			<systemPath>${user.home}/.m2/repository/org/alfresco/alfresco-web-client/4.2.e/alfresco-web-client-4.2.e.jar</systemPath>
+			<systemPath>D:/maven_repo/org/alfresco/alfresco-web-client/4.2.e/alfresco-web-client-4.2.e.jar</systemPath>
 		</dependency>		
 	</dependencies>
 
