@@ -1,7 +1,7 @@
 alfviral (Alfresco Virus Alert)
 ===============================
 
-Alfresco's Module for Enterprise and Community versions to scan documents using every antivirus engine. Verifying documents with ClamAV, Symantec, McAfee, Sophos, [...] using some mechanisms as sending datastream to a TCP port, execute command with parameters, sending to totalantivirus.com or using ICAP protocol.
+Alfresco's Module for Enterprise and Community versions to scan documents using every antivirus engine. Verifying documents with ClamAV, Symantec, McAfee, Sophos, [...] using some mechanisms as sending datastream to a TCP port, execute command with parameters, sending to www.virustotal.com or using ICAP protocol.
 
 Last version: 1.3.1-beta
 New features:
