@@ -1,8 +1,0 @@
-<webscript>
-  <shortname>ScanFile</shortname>
-  <description>Document List Action - ScanFile document(s)</description>
-  <url>/slingshot/doclib/action/scanfile/site/{site}/{container}</url>
-  <format default="json">argument</format>
-  <authentication>user</authentication>
-  <transaction>required</transaction>
-</webscript>

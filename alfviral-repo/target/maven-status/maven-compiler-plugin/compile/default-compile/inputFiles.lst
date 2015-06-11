@@ -1,0 +1,15 @@
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/behavior/OnUpdateReadScan.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/services/AntivirusServiceRegistry.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/security/antivirus/VirusTotalScan.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/action/VirusScanAction.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/security/antivirus/CommandScan.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/evaluator/VirusScanEvaluator.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/services/AntivirusServiceDescriptorRegistry.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/model/AlfviralModel.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/protocols/icap/ICAP.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/security/antivirus/ICAPScan.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/protocols/icap/ICAPException.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/security/antivirus/VirusScanMode.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/security/antivirus/InStreamScan.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/security/util/md5.java
+/Users/fegor/Documents/workspace/alfviral/alfviral-repo/src/main/java/com/fegor/alfresco/services/AntivirusService.java

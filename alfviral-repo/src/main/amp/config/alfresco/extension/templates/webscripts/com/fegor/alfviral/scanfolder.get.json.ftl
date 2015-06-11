@@ -1,0 +1,2 @@
+{"success":"${folder_scan}"}
+

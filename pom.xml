@@ -70,7 +70,7 @@
         </repository>
     </repositories>
   <modules>
-    <module>amp</module>
+    <module>alfviral-repo</module>
     <module>alfresco</module>
     <module>solr</module>
     <module>share</module>
