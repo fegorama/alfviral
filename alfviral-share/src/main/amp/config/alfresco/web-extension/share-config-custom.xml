@@ -1,0 +1,134 @@
+<alfresco-config>
+    <!-- Configure form selector -->
+    <config evaluator="string-compare" condition="avaSearch">
+        <search>
+            <forms>
+                <form labelId="search.form.label.ava.infected.cm_content" id="advancedSearchAlfviral"
+                    descriptionId="search.form.desc.ava.infected.cm_content">cm:content</form>
+            </forms>
+        </search>
+    </config>
+
+    <config evaluator="aspect" condition="ava:infected">
+        <forms>
+            <form>
+                <field-visibility>
+                    <show id="ava:date" />
+                    <show id="ava:clean" />
+                </field-visibility>
+                <appearance>
+                    <field id="ava:date" label-id="prop.ava.date" read-only="true" />
+                    <field id="ava:clean" label-id="prop.ava.clean" read-only="true" />
+                </appearance>
+            </form>
+        </forms>
+        <advanced-search>
+            <forms>
+                <form labelId="search.form.label.ava.infected.cm_content" id="advancedSearchAlfviral"
+                    descriptionId="search.form.desc.ava.infected.cm_content">cm:content</form>
+            </forms>
+        </advanced-search>
+    </config>
+    
+    <config evaluator="aspect" condition="ava:scanned_from_virustotal">
+        <forms>
+            <form>
+                <field-visibility>
+                    <show id="ava:vt_response_code" />
+                    <show id="ava:vt_verbose_msg" />
+                    <show id="ava:vt_resource" />
+                    <show id="ava:vt_scan_id" />
+                    <show id="ava:vt_permalink" />
+                    <show id="ava:vt_sha256" />
+                    <show id="ava:vt_positives" />
+                </field-visibility>
+                <appearance>
+                    <field id="ava:vt_response_code" label-id="prop.ava.response.code" read-only="true" />
+                    <field id="ava:vt_verbose_msg" label-id="prop.ava.verbose.msg" read-only="true" />
+                    <field id="ava:vt_resource" label-id="prop.ava.resource" read-only="true" />
+                    <field id="ava:vt_scan_id" label-id="prop.ava.scan.id" read-only="true" />
+                    <field id="ava:vt_permalink" label-id="prop.ava.permalink" read-only="true" />
+                    <field id="ava:vt_sha256" label-id="prop.ava.sha256" read-only="true" />
+                    <field id="ava:vt_positives" label-id="prop.ava.positives" read-only="true" />
+                </appearance>
+            </form>
+        </forms>
+    </config>
+    
+    <config evaluator="string-compare" condition="cm:content">
+        <forms>
+            <form id="advancedSearchAlfviral">
+                <field-visibility>
+                    <!-- Simple search fields -->
+                    <show id="ava:date" />
+                    <show id="ava:clean" />
+                </field-visibility>
+                <appearance>
+                    <field id="ava:date" label-id="prop.ava.date" />
+                    <field id="ava:clean" label-id="prop.ava.clean" />
+                </appearance>
+            </form>
+        </forms>
+    </config>
+    
+	<!-- Document Library -->
+	<config evaluator="string-compare" condition="DocumentLibrary">
+		<aspects>
+			<visible>
+				<aspect name="ava:infected" />
+				<aspect name="ava:scanned_from_command" />
+				<aspect name="ava:scanned_from_instream" />
+				<aspect name="ava:scanned_from_virustotal" />
+                <aspect name="ava:scanned_from_icap" />			
+			</visible>
+
+			<addable>
+			</addable>
+
+			<removeable>
+			</removeable>
+		</aspects>
+	</config>
+
+	<!-- Document Library Custom Code config section -->
+	<config evaluator="string-compare" condition="DocLibCustom">
+		<!-- Custom Code dependencies. Note: files specified in the "src" attribute 
+			resolve relative to the /share/res/ servlet context. -->
+
+		<dependencies>
+			<css src="/alfviral/components/documentlibrary/scanfile-action.css" />
+			<js src="/alfviral/components/documentlibrary/scanfile-action.js" />
+		</dependencies>
+	</config>
+
+	<!-- Document Library Actions config section -->
+	<config evaluator="string-compare" condition="DocLibActions">
+		<actions>
+			<action id="action-scan-file" type="javascript" label="actions.document.scanfile">
+				<param name="function">onActionScanFile</param>				
+			</action>
+		</actions>
+
+		<!-- Action Group definitions -->
+		<actionGroups>
+			<actionGroup id="empty" />
+
+			<actionGroup id="document-browse">
+				<action index="380" id="action-scan-file" />
+			</actionGroup>
+
+			<actionGroup id="document-details">
+				<action index="400" id="action-scan-file" />
+			</actionGroup>
+
+			<actionGroup id="folder-browse">
+				<action index="400" id="action-scan-file" />
+			</actionGroup>
+
+			<actionGroup id="folder-details">
+				<action index="400" id="action-scan-file" />
+			</actionGroup>
+		</actionGroups>
+	</config>
+
+</alfresco-config>
