@@ -15,6 +15,7 @@ import org.alfresco.service.cmr.action.ActionService;
 import org.alfresco.service.cmr.repository.ContentIOException;
 import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.ContentService;
+import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.security.AuthenticationService;
@@ -89,7 +90,7 @@ public class AntivirusService {
 	 * 
 	 * @param nodeRef
 	 */
-	public void scanFile(NodeRef nodeRef) {
+	public void scanFile(NodeRef nodeRef) throws InvalidNodeRefException {
 		int res = 0;
 
 		contentReader = this.contentService.getReader(nodeRef,

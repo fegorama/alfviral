@@ -26,6 +26,7 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.apache.log4j.Logger;
+
 import com.fegor.alfresco.model.AlfviralModel;
 
 /**
@@ -69,7 +70,7 @@ public class OnUpdateReadScan implements
 	public void init() {
 		if (logger.isDebugEnabled())
 			logger.debug(this.getClass().getName() + ": [init]");
-		
+
 		// create behavior and binding for updates
 		if (this.on_update) {
 			this.onContentUpdate = new JavaBehaviour(this, "onContentUpdate",
@@ -101,18 +102,31 @@ public class OnUpdateReadScan implements
 	 * #onContentUpdate(org.alfresco.service.cmr.repository.NodeRef, boolean)
 	 */
 	@Override
-	public void onContentUpdate(NodeRef nodeRef, boolean flag) {		
-		actionService.executeAction(
-				actionService.createAction("alfviral.virusscan.action"),
-				nodeRef);
+	public void onContentUpdate(NodeRef nodeRef, boolean flag) {
 
-		if (nodeService.hasAspect(nodeRef, AlfviralModel.ASPECT_INFECTED)) {
-			
-			if (logger.isDebugEnabled()) {
-				
-				logger.debug(this.getClass().getName()
-						+ ": [In onContentUpdate: " + nodeRef + " is infected]");
+		if (logger.isDebugEnabled()) {
+			logger.debug("NodeRef Id: " + nodeRef.getId().toString());
+		}
+
+		if (nodeService.exists(nodeRef)) {
+			actionService.executeAction(
+					actionService.createAction("alfviral.virusscan.action"),
+					nodeRef);
+
+			if (nodeService.hasAspect(nodeRef, AlfviralModel.ASPECT_INFECTED)) {
+
+				if (logger.isDebugEnabled()) {
+
+					logger.debug(this.getClass().getName()
+							+ ": [In onContentUpdate: " + nodeRef
+							+ " is infected]");
+				}
 			}
+		}
+
+		else {
+			logger.debug("NodeRef Id: " + nodeRef.getId().toString()
+					+ " has deleted (update event)");
 		}
 	}
 
@@ -124,13 +138,15 @@ public class OnUpdateReadScan implements
 	 * onContentRead(org.alfresco.service.cmr.repository.NodeRef)
 	 */
 	@Override
-	public void onContentRead(NodeRef nodeRef) {		
-		actionService.executeAction(actionService.createAction("alfviral.virusscan.action"), nodeRef);
-		
+	public void onContentRead(NodeRef nodeRef) {
+		actionService.executeAction(
+				actionService.createAction("alfviral.virusscan.action"),
+				nodeRef);
+
 		if (nodeService.hasAspect(nodeRef, AlfviralModel.ASPECT_INFECTED)) {
-			
+
 			if (logger.isDebugEnabled()) {
-				
+
 				logger.debug(this.getClass().getName()
 						+ ": [In onContentRead: " + nodeRef + " is infected]");
 			}
@@ -140,8 +156,9 @@ public class OnUpdateReadScan implements
 	/**
 	 * Visualize message "loaded"
 	 */
-	public void loaded() {		
-		logger.info(this.getClass().getName() + " Alfresco Virus Alert AMP has been loaded in the behaviour");
+	public void loaded() {
+		logger.info(this.getClass().getName()
+				+ " Alfresco Virus Alert AMP has been loaded in the behaviour");
 	}
 
 	public void setPolicyComponent(PolicyComponent policyComponent) {

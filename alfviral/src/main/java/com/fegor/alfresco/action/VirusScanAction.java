@@ -16,11 +16,17 @@ package com.fegor.alfresco.action;
 
 import java.util.List;
 
+import javax.transaction.Status;
+import javax.transaction.UserTransaction;
+
 import org.alfresco.repo.action.executer.ActionExecuterAbstractBase;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
+import org.alfresco.service.cmr.repository.InvalidNodeRefException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.apache.log4j.Logger;
+
 import com.fegor.alfresco.services.AntivirusService;
 
 /**
@@ -48,11 +54,27 @@ public class VirusScanAction extends ActionExecuterAbstractBase {
 	 */
 	@Override
 	protected void executeImpl(Action action, NodeRef actionedUponNodeRef) {
+
 		if (actionedUponNodeRef != null) {
+
 			if (logger.isDebugEnabled()) {
-				logger.debug(getClass().getName() + " scanFile for " + actionedUponNodeRef.getId());
+				logger.debug(getClass().getName() + " scanFile for "
+						+ actionedUponNodeRef.getId());
 			}
-			antivirusService.scanFile(actionedUponNodeRef);
+
+			try {
+				antivirusService.scanFile(actionedUponNodeRef);
+			}
+
+			catch (InvalidNodeRefException inre) {
+
+				// TODO In Share (version 4.2), update of document produce the
+				// Node not found error
+
+				logger.warn(this.getClass().getName() + ": NodeRef: "
+						+ actionedUponNodeRef.getId()
+						+ " not found. This node has changed in transaction.");
+			}
 		}
 	}
 

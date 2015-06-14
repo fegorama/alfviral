@@ -11,5 +11,5 @@ com/fegor/alfresco/evaluator/VirusScanEvaluator.class
 com/fegor/alfresco/services/AntivirusService.class
 com/fegor/alfresco/services/AntivirusServiceRegistry.class
 com/fegor/alfresco/behavior/OnUpdateReadScan.class
-com/fegor/alfresco/security/util/md5.class
 com/fegor/alfresco/protocols/icap/ICAP.class
+com/fegor/alfresco/security/util/md5.class
