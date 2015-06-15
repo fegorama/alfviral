@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><component>
+      <guid>page.component-2-2.site~alfviral-test~dashboard</guid>
+      <scope>page</scope>
+      <region-id>component-2-2</region-id>
+      <source-id>site/alfviral-test/dashboard</source-id>
+      <url>/components/dashlets/activityfeed</url>
+    </component>

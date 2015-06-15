@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="actasReunionesCGCOM" name="Actas y Reuniones CGCOM" isExecutable="true">
+    <startEvent id="alfrescoStartevent1" name="Alfresco start" activiti:formKey="bpm:startTask"></startEvent>
+    <userTask id="alfrescoUsertask1" name="Aprobar Acta" activiti:candidateGroups="GROUP_G_FUN_COMISION-COORDINACION" activiti:formKey="wf:activitiReviewTask">
+      <extensionElements>
+        <activiti:taskListener event="complete" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('wf_reviewOutcome', task.getVariable('wf_reviewOutcome'));
+logger.log('var '+ task.getVariable('wf_reviewOutcome') );]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="alfrescoUsertask2" name="Redactar Acta" activiti:assignee="${initiator.properties.userName}" activiti:formKey="wf:rejectedTask">
+      <extensionElements>
+        <activiti:taskListener event="complete" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('bpm_assignee', initiator.properties.userName);]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <userTask id="alfrescoMailtask1" name="Difusion Acta" activiti:assignee="${initiator.properties.userName}" activiti:formKey="owf:activitiSendNotification">
+      <extensionElements>
+        <activiti:taskListener event="complete" class="es.omc.ae.workflow.SendMailTaskListener"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow2" name="Aprobado?" sourceRef="alfrescoUsertask1" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow3" name="No" sourceRef="exclusivegateway1" targetRef="alfrescoUsertask2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Reject'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" name="Yes" sourceRef="exclusivegateway1" targetRef="astConvertirPDF">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${wf_reviewOutcome == 'Approve'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="alfrescoUsertask2" targetRef="alfrescoUsertask1"></sequenceFlow>
+    <serviceTask id="alfrescoScripttask1" name="User Verification" activiti:class="org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate">
+      <extensionElements>
+        <activiti:field name="script">
+          <activiti:string><![CDATA[var check = false;
+var userName = initiator.properties.userName;
+var group = people.getGroup("GROUP_Secretaria");
+logger.log("group:" +group);
+var result = people.getMembers(group);
+logger.log("results:" +result);
+for (var i=0; i < result.length; i++){
+        logger.log("result:" +result[i]);
+ if (result[i].properties["cm:userName"]==userName){
+         check = true;
+         logger.log("user: " +userName + " puede lanzar el wf");
+         break;
+ }
+}
+
+if(!check){
+var idInstancia = execution.getVariable("workflowinstanceid");
+logger.log("Instance: " +idInstancia);
+var curreentWF = workflow.getInstance(idInstancia);
+logger.log("Instance: " +idInstancia);
+curreentWF.cancel();
+}]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow8" sourceRef="alfrescoScripttask1" targetRef="alfrescoUsertask1"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="alfrescoStartevent1" targetRef="alfrescoScripttask1"></sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="alfrescoMailtask1" targetRef="endevent1"></sequenceFlow>
+    <serviceTask id="astConvertirPDF" name="Convertir a PDF" activiti:class="org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate">
+      <extensionElements>
+        <activiti:field name="script">
+          <activiti:string><![CDATA[logger.log("** Convertir a PDF **");
+
+// Transform document to PDF
+var currentDocument = bpm_package.children[0];
+var documentPDF = currentDocument.transformDocument("application/pdf");
+logger.log("Document " + currentDocument.properties["cm:name"] + " transform to PDF as " + documentPDF.properties["cm:name"]);
+
+// Remove current document and add PDF
+bpm_package.removeNode(currentDocument);
+logger.log("Document ref: " + currentDocument + " removed");
+
+bpm_package.addNode(documentPDF);
+logger.log("Document ref: " + documentPDF + " added");]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="astEnviarPortafirmasSecretaria" name="Enviar a Portafirmas para Secretaria" activiti:class="org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate">
+      <extensionElements>
+        <activiti:field name="script">
+          <activiti:string><![CDATA[logger.log("** Enviar a portafirmas para secretaria **");
+
+var nodeRefDoc = bpm_package.children[0];
+var action = actions.create("AddSignatureRequestAction");
+action.parameters.signatureProfile = "PAdES";
+action.parameters.signatureSubject = "Documento '" + nodeRefDoc.properties["cm:name"] + "' para firmar";
+action.parameters.workflowId = "test";
+action.execute(nodeRefDoc);]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <userTask id="autProcesoFirmadoSecretaria" name="Proceso de firmado (Secretaria)" activiti:assignee="${initiator.properties.userName}" activiti:formKey="wf:adhocTask">
+      <extensionElements>
+        <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('bpm_assignee', initiator.properties.userName);
+execution.setVariable('sig_signatureStatus',task.getVariable('sig_signatureStatus'));]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <serviceTask id="astCrearNuevaRevision" name="Crear nueva revisión" activiti:class="org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate">
+      <extensionElements>
+        <activiti:field name="script">
+          <activiti:string><![CDATA[logger.log("** Nueva version **");
+
+var nodeRefDoc = bpm_package.children[0];
+var content = nodeRefDoc.properties["content"];
+var workingCopy = nodeRefDoc.checkout();
+workingCopy.content = content;
+nodeRefDocNew = workingCopy.checkin();]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="astEnviarPortafirmasPresidencia" name="Enviar a Portafirmas para Presidencia" activiti:class="org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate">
+      <extensionElements>
+        <activiti:field name="script">
+          <activiti:string><![CDATA[logger.log("** Enviar a portafirmas para presidencia**");
+
+var nodeRefDoc = bpm_package.children[0];
+nodeRefDoc.properties["sig:statusSignature"] = "ESPERA";
+var action = actions.create("AddSignatureRequestAction");
+action.parameters.signatureProfile = "PAdES";
+action.parameters.signatureSubject = "Documento '" + nodeRefDoc.properties["cm:name"] + "' para firmar";
+action.parameters.workflowId = "test";
+action.execute(nodeRefDoc);]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <userTask id="autProcesoFirmadoPresidencia" name="Proceso de firmado (Presidencia)" activiti:assignee="${initiator.properties.userName}" activiti:formKey="wf:adhocTask">
+      <extensionElements>
+        <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('bpm_assignee', initiator.properties.userName);
+execution.setVariable('sig_signatureStatus',task.getVariable('sig_signatureStatus'));]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <boundaryEvent id="boundarytimer1" name="Timer" attachedToRef="autProcesoFirmadoSecretaria" cancelActivity="false">
+      <timerEventDefinition>
+        <timeCycle>0 0/30 * ? * *</timeCycle>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <boundaryEvent id="boundarytimer2" name="Timer" attachedToRef="autProcesoFirmadoPresidencia" cancelActivity="false">
+      <timerEventDefinition>
+        <timeCycle>0 0/30 * ? * *</timeCycle>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <serviceTask id="alfrescoScripttask6" name="Estado Firma Secretaria" activiti:class="org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate">
+      <extensionElements>
+        <activiti:field name="script">
+          <activiti:string><![CDATA[logger.log("** Estado firma secretaria **");
+
+var nodeRefDoc = bpm_package.children[0];
+var action = actions.create("GetSignatureStatusAction");
+action.execute(nodeRefDoc);
+execution.setVariable("sig:signatureStatus", nodeRefDoc.properties["sig:signatureStatus"]);]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="alfrescoScripttask7" name="Estado Firma Presidencia" activiti:class="org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate">
+      <extensionElements>
+        <activiti:field name="script">
+          <activiti:string><![CDATA[logger.log("** Estado firma presidencia **");
+
+var nodeRefDoc = bpm_package.children[0];
+var action = actions.create("GetSignatureStatusAction");
+action.execute(nodeRefDoc);
+execution.setVariable("sig:signatureStatus", nodeRefDoc.properties["sig:signatureStatus"]);]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow11" sourceRef="astConvertirPDF" targetRef="astEnviarPortafirmasSecretaria"></sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="astEnviarPortafirmasSecretaria" targetRef="autProcesoFirmadoSecretaria"></sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="boundarytimer1" targetRef="alfrescoScripttask6"></sequenceFlow>
+    <sequenceFlow id="flow14" name="Firmado por secretaria" sourceRef="alfrescoScripttask6" targetRef="astCrearNuevaRevision">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sig_signatureStatus == 'FIRMADO'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow15" sourceRef="astCrearNuevaRevision" targetRef="astEnviarPortafirmasPresidencia"></sequenceFlow>
+    <sequenceFlow id="flow16" sourceRef="astEnviarPortafirmasPresidencia" targetRef="autProcesoFirmadoPresidencia"></sequenceFlow>
+    <sequenceFlow id="flow17" sourceRef="boundarytimer2" targetRef="alfrescoScripttask7"></sequenceFlow>
+    <sequenceFlow id="flow18" name="Firmado por presidencia" sourceRef="alfrescoScripttask7" targetRef="alfrescoMailtask1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sig_signatureStatus == 'FIRMADO'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow19" name="Seguir sin firma de presidencia" sourceRef="autProcesoFirmadoPresidencia" targetRef="alfrescoMailtask1"></sequenceFlow>
+    <sequenceFlow id="flow20" name="Seguir sin firma de secretaria" sourceRef="autProcesoFirmadoSecretaria" targetRef="autProcesoFirmadoPresidencia"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_actasReunionesCGCOM">
+    <bpmndi:BPMNPlane bpmnElement="actasReunionesCGCOM" id="BPMNPlane_actasReunionesCGCOM">
+      <bpmndi:BPMNShape bpmnElement="alfrescoStartevent1" id="BPMNShape_alfrescoStartevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="alfrescoUsertask1" id="BPMNShape_alfrescoUsertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="276.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="alfrescoUsertask2" id="BPMNShape_alfrescoUsertask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="276.0" y="230.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="456.0" y="117.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="alfrescoMailtask1" id="BPMNShape_alfrescoMailtask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="914.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1060.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="alfrescoScripttask1" id="BPMNShape_alfrescoScripttask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="120.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="astConvertirPDF" id="BPMNShape_astConvertirPDF">
+        <omgdc:Bounds height="55.0" width="105.0" x="595.0" y="202.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="astEnviarPortafirmasSecretaria" id="BPMNShape_astEnviarPortafirmasSecretaria">
+        <omgdc:Bounds height="55.0" width="105.0" x="595.0" y="284.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="autProcesoFirmadoSecretaria" id="BPMNShape_autProcesoFirmadoSecretaria">
+        <omgdc:Bounds height="55.0" width="105.0" x="595.0" y="360.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundarytimer1" id="BPMNShape_boundarytimer1">
+        <omgdc:Bounds height="30.0" width="30.0" x="685.0" y="410.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="astCrearNuevaRevision" id="BPMNShape_astCrearNuevaRevision">
+        <omgdc:Bounds height="55.0" width="105.0" x="595.0" y="440.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="astEnviarPortafirmasPresidencia" id="BPMNShape_astEnviarPortafirmasPresidencia">
+        <omgdc:Bounds height="55.0" width="105.0" x="595.0" y="520.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="autProcesoFirmadoPresidencia" id="BPMNShape_autProcesoFirmadoPresidencia">
+        <omgdc:Bounds height="55.0" width="105.0" x="595.0" y="600.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundarytimer2" id="BPMNShape_boundarytimer2">
+        <omgdc:Bounds height="30.0" width="30.0" x="685.0" y="650.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="alfrescoScripttask6" id="BPMNShape_alfrescoScripttask6">
+        <omgdc:Bounds height="55.0" width="105.0" x="770.0" y="397.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="alfrescoScripttask7" id="BPMNShape_alfrescoScripttask7">
+        <omgdc:Bounds height="55.0" width="105.0" x="770.0" y="636.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="381.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="456.0" y="137.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="54.0" x="388.0" y="120.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="476.0" y="157.0"></omgdi:waypoint>
+        <omgdi:waypoint x="475.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="381.0" y="257.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="13.0" x="457.0" y="188.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="496.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="537.0" y="136.0"></omgdi:waypoint>
+        <omgdi:waypoint x="537.0" y="229.0"></omgdi:waypoint>
+        <omgdi:waypoint x="595.0" y="229.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="20.0" x="489.0" y="111.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="328.0" y="230.0"></omgdi:waypoint>
+        <omgdi:waypoint x="328.0" y="165.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="225.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="276.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="65.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="1019.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1060.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="647.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="647.0" y="284.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="647.0" y="339.0"></omgdi:waypoint>
+        <omgdi:waypoint x="647.0" y="360.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="715.0" y="425.0"></omgdi:waypoint>
+        <omgdi:waypoint x="770.0" y="424.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="822.0" y="452.0"></omgdi:waypoint>
+        <omgdi:waypoint x="824.0" y="468.0"></omgdi:waypoint>
+        <omgdi:waypoint x="756.0" y="468.0"></omgdi:waypoint>
+        <omgdi:waypoint x="700.0" y="467.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="832.0" y="452.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="647.0" y="495.0"></omgdi:waypoint>
+        <omgdi:waypoint x="647.0" y="520.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="647.0" y="575.0"></omgdi:waypoint>
+        <omgdi:waypoint x="647.0" y="600.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="715.0" y="665.0"></omgdi:waypoint>
+        <omgdi:waypoint x="770.0" y="663.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+        <omgdi:waypoint x="875.0" y="663.0"></omgdi:waypoint>
+        <omgdi:waypoint x="966.0" y="663.0"></omgdi:waypoint>
+        <omgdi:waypoint x="966.0" y="393.0"></omgdi:waypoint>
+        <omgdi:waypoint x="966.0" y="165.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="885.0" y="663.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+        <omgdi:waypoint x="647.0" y="655.0"></omgdi:waypoint>
+        <omgdi:waypoint x="647.0" y="706.0"></omgdi:waypoint>
+        <omgdi:waypoint x="966.0" y="706.0"></omgdi:waypoint>
+        <omgdi:waypoint x="966.0" y="165.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="540.0" y="653.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="595.0" y="387.0"></omgdi:waypoint>
+        <omgdi:waypoint x="512.0" y="387.0"></omgdi:waypoint>
+        <omgdi:waypoint x="512.0" y="627.0"></omgdi:waypoint>
+        <omgdi:waypoint x="595.0" y="627.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="421.0" y="414.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

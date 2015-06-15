@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><component>
+      <guid>page.component-2-2.user~admin~dashboard</guid>
+      <scope>page</scope>
+      <region-id>component-2-2</region-id>
+      <source-id>user/admin/dashboard</source-id>
+      <url>/components/dashlets/my-documents</url>
+      <properties>
+        <height>240</height>
+      </properties>
+    </component>

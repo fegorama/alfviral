@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><page>
+      <title>User Dashboard</title>
+      <title-id>page.userDashboard.title</title-id>
+      <description>Users dashboard page</description>
+      <description-id>page.userDashboard.description</description-id>
+      <authentication>user</authentication>
+      <template-instance>dashboard-2-columns-wide-right</template-instance>
+    </page>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><component>
+      <guid>page.component-2-1.user~admin~dashboard</guid>
+      <scope>page</scope>
+      <region-id>component-2-1</region-id>
+      <source-id>user/admin/dashboard</source-id>
+      <url>/components/dashlets/my-activities</url>
+    </component>

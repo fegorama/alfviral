@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><component>
+      <guid>page.full-width-dashlet.user~admin~dashboard</guid>
+      <scope>page</scope>
+      <region-id>full-width-dashlet</region-id>
+      <source-id>user/admin/dashboard</source-id>
+      <url>/components/dashlets/dynamic-welcome</url>
+      <properties>
+        <dashboardType>user</dashboardType>
+      </properties>
+    </component>

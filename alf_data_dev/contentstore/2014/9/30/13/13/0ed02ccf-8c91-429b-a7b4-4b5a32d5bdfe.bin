@@ -1,0 +1,9 @@
+var nodeRef = args["nodeRef"]; 
+var node = search.findNode(nodeRef);
+
+if (!node.hasAspect("ava:infected")) {
+    actions.create("alfviral.virusscan.action").execute(node);
+}
+
+var goBack = "<script>history.back();</script>";
+goBack;

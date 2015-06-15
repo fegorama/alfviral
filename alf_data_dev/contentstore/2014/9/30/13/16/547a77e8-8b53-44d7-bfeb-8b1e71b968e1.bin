@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><component>
+      <guid>page.navigation.site~alfviral-test~dashboard</guid>
+      <scope>page</scope>
+      <region-id>navigation</region-id>
+      <source-id>site/alfviral-test/dashboard</source-id>
+      <url>/components/navigation/collaboration-navigation</url>
+    </component>
