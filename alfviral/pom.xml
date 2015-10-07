@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fegor.alfresco</groupId>
     <artifactId>alfviral</artifactId>
-    <version>1.3.2-SNAPSHOT</version>
+    <version>1.3.3-SNAPSHOT</version>
     <name>Alfviral AMP project</name>
     <packaging>amp</packaging>
     <description>Manages the lifecycle of the alfviral AMP (Alfresco Module Package)</description>
@@ -71,7 +71,7 @@
 			<version>4.2.e</version>
 			<classifier>classes</classifier>
 			<scope>system</scope>
-			<systemPath>/data/maven_repo/org/alfresco/alfresco-web-client/4.2.e/alfresco-web-client-4.2.e.jar</systemPath>
+			<systemPath>G:/maven_repo/org/alfresco/alfresco-web-client/4.2.e/alfresco-web-client-4.2.e.jar</systemPath>
 		</dependency>        
         <!-- Test dependencies -->
         <dependency>
