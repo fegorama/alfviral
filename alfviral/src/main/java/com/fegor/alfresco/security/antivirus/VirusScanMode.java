@@ -21,12 +21,13 @@ import java.io.IOException;
 import org.alfresco.service.cmr.repository.NodeRef;
 
 public interface VirusScanMode {
+	public final String ScanModeCommand = "COMMAND";
+	public final String ScanModeInStream = "INSTREAM";
+	public final String ScanModeVirusTotal = "VIRUSTOTAL";
+	public final String ScanModeICap = "ICAP";
 	
 	int scan(NodeRef nodeRef) throws IOException;
-	
 	int scan() throws IOException;
-
 	int rescan() throws IOException;
-
 	int report() throws IOException;
 }

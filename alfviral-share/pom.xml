@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.fegor.alfresco</groupId>
     <artifactId>alfviral-share</artifactId>
-    <version>1.3.3-SNAPSHOT</version>
+    <version>1.3.4-SNAPSHOT</version>
     <name>Alfviral-share AMP project</name>
     <packaging>amp</packaging>
     <description>Manages the lifecycle of the alfviral-share AMP (Alfresco Module Package)</description>

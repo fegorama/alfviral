@@ -36,14 +36,14 @@ import com.fegor.alfresco.model.AlfviralModel;
  * @author fegor
  *
  */
-public class InStreamScan implements VirusScanMode {
+public final class InStreamScan implements VirusScanMode {
 
 	private final Logger logger = Logger.getLogger(InStreamScan.class);
 
 	private byte[] data;
 	private int chunkSize = 4096;
-	private static int port;
-	private static String host;
+	private int port;
+	private String host;
 	private int timeout;
 	private NodeService nodeService;
 	private NodeRef nodeRef;
@@ -99,7 +99,6 @@ public class InStreamScan implements VirusScanMode {
 		try {
 			res = scan();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return res;
@@ -172,8 +171,10 @@ public class InStreamScan implements VirusScanMode {
 		} finally {
 			if (bufferedReader != null)
 				bufferedReader.close();
+			
 			if (dataOutputStream != null)
 				dataOutputStream.close();
+			
 			if (socket != null)
 				socket.close();
 		}

@@ -17,6 +17,7 @@
 package com.fegor.alfresco.security.antivirus;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -31,8 +32,7 @@ import com.fegor.alfresco.model.AlfviralModel;
  * @author fegor
  * 
  */
-public class CommandScan implements VirusScanMode {
-
+public final class CommandScan implements VirusScanMode {
 	private final Logger logger = Logger.getLogger(CommandScan.class);
 
 	private List<String> command;
@@ -55,12 +55,15 @@ public class CommandScan implements VirusScanMode {
 	public int scan(NodeRef nodeRef) {
 		int res = 0;
 		this.nodeRef = nodeRef;
+		
 		try {
 			res = scan();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} 
+		
+		catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		return res;
 	}
 	
@@ -77,12 +80,21 @@ public class CommandScan implements VirusScanMode {
 			 * execute command "script/command for file"
 			 */
 			this.command.add(this.file_to_scan);
+			if (logger.isDebugEnabled()) {
+				logger.debug("Command: " + Arrays.toString(this.command.toArray()));
+			}
+			
 			ProcessBuilder pb = new ProcessBuilder(this.command);
 			Process process = pb.start();
 			res = process.waitFor();
-		} catch (IOException e) {
+			this.command.subList(1, this.command.size()).clear();
+		} 
+		
+		catch (IOException e) {
 			logger.error(" Error in execute command.", e);
-		} catch (InterruptedException e) {
+		} 
+		
+		catch (InterruptedException e) {
 			logger.error(" Error in execute command.", e);
 		}
 

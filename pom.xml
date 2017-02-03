@@ -70,11 +70,13 @@
         </repository>
     </repositories>
   <modules>
-    <module>alfviral-repo</module>
+  <!--
+    <module>alfviral</module>
     <module>alfresco</module>
     <module>solr</module>
     <module>share</module>
     <module>runner</module>
+  -->
     <module>alfviral</module>
     <module>alfviral-share</module>
   </modules>

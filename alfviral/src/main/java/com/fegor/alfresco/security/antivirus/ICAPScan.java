@@ -35,7 +35,7 @@ import com.fegor.alfresco.protocols.icap.ICAPException;
  * @author fegor
  *
  */
-public class ICAPScan implements VirusScanMode {
+public final class ICAPScan implements VirusScanMode {
 
 	private final Logger logger = Logger.getLogger(ICAPScan.class);
 

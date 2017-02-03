@@ -22,8 +22,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Map;
-
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.action.executer.MailActionExecuter;
 import org.alfresco.service.cmr.action.Action;
@@ -38,11 +36,11 @@ import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
 import org.apache.log4j.Logger;
-
 import com.fegor.alfresco.model.AlfviralModel;
 import com.fegor.alfresco.security.antivirus.CommandScan;
 import com.fegor.alfresco.security.antivirus.ICAPScan;
 import com.fegor.alfresco.security.antivirus.InStreamScan;
+import com.fegor.alfresco.security.antivirus.VirusScanMode;
 import com.fegor.alfresco.security.antivirus.VirusTotalScan;
 
 /**
@@ -117,11 +115,17 @@ public class AntivirusService {
 				logger.debug(this.getClass().getName() + ": [Mode: "
 						+ mode.toUpperCase() + "]");
 			}
+			
+			else if(contentReader != null) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("File/Document is excluded for virus scan.");
+				}
+			}
 
 			/*
 			 * if mode is COMMAND
 			 */
-			if (mode.toUpperCase().equals("COMMAND")) {
+			if (mode.toUpperCase().equals(VirusScanMode.ScanModeCommand)) {
 
 				commandScan.setFileToScan(contentPath);
 				res = commandScan.scan(nodeRef);
@@ -129,7 +133,7 @@ public class AntivirusService {
 			/*
 			 * if mode is INSTREAM
 			 */
-			else if (mode.toUpperCase().equals("INSTREAM")) {
+			else if (mode.toUpperCase().equals(VirusScanMode.ScanModeInStream)) {
 
 				try {
 
@@ -148,7 +152,7 @@ public class AntivirusService {
 			/*
 			 * if mode is VIRUSTOTAL
 			 */
-			else if (mode.toUpperCase().equals("VIRUSTOTAL")) {
+			else if (mode.toUpperCase().equals(VirusScanMode.ScanModeVirusTotal)) {
 
 				try {
 
@@ -166,7 +170,7 @@ public class AntivirusService {
 			/*
 			 * if mode is ICAP
 			 */
-			else if (mode.toUpperCase().equals("ICAP")) {
+			else if (mode.toUpperCase().equals(VirusScanMode.ScanModeICap)) {
 
 				try {
 
