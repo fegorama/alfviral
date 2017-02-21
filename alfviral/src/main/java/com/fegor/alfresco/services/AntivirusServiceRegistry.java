@@ -25,5 +25,5 @@ public interface AntivirusServiceRegistry {
 	static final QName ANTIVIRUS_SERVICE = QName.createQName(NamespaceService.ALFRESCO_URI, "AntivirusService");
 
     @NotAuditable
-    AntivirusService getAntivirusService();
+    AntivirusServiceImpl getAntivirusService();
 }

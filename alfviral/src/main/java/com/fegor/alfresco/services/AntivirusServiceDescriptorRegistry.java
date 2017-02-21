@@ -21,7 +21,7 @@ import org.alfresco.repo.service.ServiceDescriptorRegistry;
 public class AntivirusServiceDescriptorRegistry extends ServiceDescriptorRegistry implements AntivirusServiceRegistry {
 
 	@Override
-	public AntivirusService getAntivirusService() {
-		return (AntivirusService)getService(ANTIVIRUS_SERVICE);
+	public AntivirusServiceImpl getAntivirusService() {
+		return (AntivirusServiceImpl)getService(ANTIVIRUS_SERVICE);
 	}
 }

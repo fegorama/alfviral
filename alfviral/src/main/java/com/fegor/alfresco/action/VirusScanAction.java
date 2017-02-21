@@ -18,11 +18,8 @@ package com.fegor.alfresco.action;
 
 import java.util.List;
 
-import javax.transaction.Status;
-import javax.transaction.UserTransaction;
-
 import org.alfresco.repo.action.executer.ActionExecuterAbstractBase;
-import org.alfresco.service.ServiceRegistry;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.action.Action;
 import org.alfresco.service.cmr.action.ParameterDefinition;
 import org.alfresco.service.cmr.repository.InvalidNodeRefException;
@@ -55,15 +52,35 @@ public class VirusScanAction extends ActionExecuterAbstractBase {
 	 * org.alfresco.service.cmr.repository.NodeRef)
 	 */
 	@Override
-	protected void executeImpl(Action action, NodeRef actionedUponNodeRef) {
+	protected void executeImpl(Action action, final NodeRef actionedUponNodeRef) {
 
-		if (actionedUponNodeRef != null) {
+		if (AuthenticationUtil.getRunAsUser() != null) {
+			run(actionedUponNodeRef);
+		}
 
+		else {
 			if (logger.isDebugEnabled()) {
-				logger.debug(getClass().getName() + " scanFile for "
-						+ actionedUponNodeRef.getId());
+				logger.debug("Run action as system user for node '" + actionedUponNodeRef + "'");
 			}
+			
+			AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
+				@Override
+				public Void doWork() throws Exception {
+					try {
+						run(actionedUponNodeRef);
+					}
 
+					catch (Exception e) {
+						logger.error(e);
+					}
+					return null;
+				}
+			});
+		}
+	}
+
+	protected void run(NodeRef actionedUponNodeRef) {
+		if (actionedUponNodeRef != null) {
 			try {
 				antivirusService.scanFile(actionedUponNodeRef);
 			}
@@ -73,9 +90,12 @@ public class VirusScanAction extends ActionExecuterAbstractBase {
 				// TODO In Share (version 4.2), update of document produce the
 				// Node not found error
 
-				logger.warn(this.getClass().getName() + ": NodeRef: "
-						+ actionedUponNodeRef.getId()
+				logger.warn(this.getClass().getName() + ": NodeRef: " + actionedUponNodeRef.getId()
 						+ " not found. This node has changed in transaction.");
+			}
+
+			catch (net.sf.acegisecurity.AuthenticationCredentialsNotFoundException acnfe) {
+				logger.error("Not credentials.");
 			}
 		}
 	}

@@ -1,8 +1,0 @@
-<webscript>
-  <shortname>Alfviral Folder Scan</shortname>
-  <description>Alfresco Virus Alert folder scan.</description>
-   <url>/alfviral/scanfolder?f={f};p={p}</url>
-   <format default="text">extension</format>
-   <authentication>user</authentication>
-   <transaction>required</transaction>
-</webscript>

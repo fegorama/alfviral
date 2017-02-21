@@ -81,7 +81,6 @@ public class OnUpdateReadScan implements
 			this.policyComponent.bindClassBehaviour(QName.createQName(
 					NamespaceService.ALFRESCO_URI, "onContentUpdate"),
 					ContentModel.TYPE_CMOBJECT, this.onContentUpdate);
-
 		}
 
 		// create behavior and binding for read
@@ -93,7 +92,6 @@ public class OnUpdateReadScan implements
 					NamespaceService.ALFRESCO_URI, "onContentRead"),
 					ContentModel.TYPE_CMOBJECT, this.onContentRead);
 		}
-
 	}
 
 	/*
