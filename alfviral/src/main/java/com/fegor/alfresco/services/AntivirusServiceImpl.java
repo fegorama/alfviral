@@ -248,8 +248,8 @@ public class AntivirusServiceImpl implements AntivirusService {
 				}
 			}
 
-			else if ((!(fileOnlyOrExceptions.toLowerCase()).equals(fileOnly))
-					|| (!(fileOnlyOrExceptions.toLowerCase()).equals(fileExceptions))) {
+			else if ((!(fileOnlyOrExceptions.toLowerCase()).equals(FILE_ONLY))
+					|| (!(fileOnlyOrExceptions.toLowerCase()).equals(FILE_EXCEPTIONS))) {
 				logger.error("Property alfviral.file.only_or_exceptions not is '" + FILE_ONLY + "' or '"
 						+ FILE_EXCEPTIONS + "'");
 			}
