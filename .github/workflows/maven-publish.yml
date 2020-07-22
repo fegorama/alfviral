@@ -1,0 +1,43 @@
+# This workflow will build a package using Maven
+# For more information see: https://github.com/actions/setup-java#apache-maven-with-a-settings-path
+
+name: Maven Package
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }} # location for the settings.xml file
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    - name: Archive alfviral-amp artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: alfviral
+        path: alfviral/target/alfviral-*.amp
+    - name: Archive alfviral-share-amp artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: alfviral-share
+        path: alfviral-share/target/alfviral-share-*.amp
