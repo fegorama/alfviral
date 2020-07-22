@@ -67,6 +67,13 @@
          <scope>provided</scope> is inherited for each of the following; 
          for more info, please refer to alfresco-platform-distribution POM -->
     <dependencies>
+        <!-- FIX: override deprecated dependency org.springframework.social:spring-social-facebook:jar:1.0.0.RC1 -->
+        <dependency>
+            <groupId>org.springframework.social</groupId>
+            <artifactId>spring-social-facebook</artifactId>
+            <version>1.1.1.RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>${alfresco.groupId}</groupId>
             <artifactId>alfresco-repository</artifactId>
