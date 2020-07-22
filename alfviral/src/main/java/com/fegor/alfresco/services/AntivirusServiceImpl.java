@@ -94,6 +94,7 @@ public class AntivirusServiceImpl implements AntivirusService {
 	private boolean notifyUser;
 	private String notifyAdminTemplate;
 	private String notifyUserTemplate;
+	private boolean notifyAsynchronously;
 
 	private int icapPort;
 	private String icapHost;
@@ -343,6 +344,7 @@ public class AntivirusServiceImpl implements AntivirusService {
 
 		logger.info(
 				this.getClass().getName() + ": [Sending notify mail notify of infected to " + mailTo + "]");
+		mailAction.setExecuteAsynchronously(notifyAsynchronously);
 		actionService.executeAction(mailAction, nodeRef);
 	}
 
@@ -400,6 +402,14 @@ public class AntivirusServiceImpl implements AntivirusService {
 	 */
 	public void setNotifyUser(boolean notifyUser) {
 		this.notifyUser = notifyUser;
+	}
+
+	public boolean isNotifyAsynchronously() {
+		return notifyAsynchronously;
+	}
+
+	public void setNotifyAsynchronously(boolean notifyAsynchronously) {
+		this.notifyAsynchronously = notifyAsynchronously;
 	}
 
 	/**
