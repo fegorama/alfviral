@@ -218,6 +218,9 @@
         <property name="onUpdate">
             <value>${alfviral.on_update}</value>
         </property>
+        <property name="deleteOnUpdate">
+            <value>${alfviral.on_update.delete}</value>
+        </property>
         <property name="onRead">
             <value>${alfviral.on_read}</value>
         </property>
