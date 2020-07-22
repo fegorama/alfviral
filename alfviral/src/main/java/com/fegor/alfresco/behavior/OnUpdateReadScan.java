@@ -65,6 +65,7 @@ public class OnUpdateReadScan implements
 	 */
 	private boolean on_update;
 	private boolean on_read;
+	private boolean deleteOnUpdate;
 
 	/**
 	 * Init method; policies definitions and bindings
@@ -121,6 +122,10 @@ public class OnUpdateReadScan implements
 							+ ": [In onContentUpdate: " + nodeRef
 							+ " is infected]");
 				}
+
+				if (deleteOnUpdate) {
+					deleteInfectedNode(nodeRef);
+				}
 			}
 		}
 
@@ -128,6 +133,12 @@ public class OnUpdateReadScan implements
 			logger.debug("NodeRef Id: " + nodeRef.getId().toString()
 					+ " has deleted (update event)");
 		}
+	}
+
+	private void deleteInfectedNode(final NodeRef nodeRef) {
+		logger.info("Delete infected node " + nodeRef);
+		nodeService.addAspect(nodeRef, ContentModel.ASPECT_TEMPORARY, null);
+		nodeService.deleteNode(nodeRef);
 	}
 
 	/*
@@ -191,5 +202,19 @@ public class OnUpdateReadScan implements
 	 */
 	public void setOnRead(boolean on_read) {
 		this.on_read = on_read;
+	}
+
+	/**
+	 * @return deleteOnUpdate
+	 */
+	public boolean isDeleteOnUpdate() {
+		return deleteOnUpdate;
+	}
+
+	/**
+	 * @param deleteOnUpdate
+	 */
+	public void setDeleteOnUpdate(boolean deleteOnUpdate) {
+		this.deleteOnUpdate = deleteOnUpdate;
 	}
 }
