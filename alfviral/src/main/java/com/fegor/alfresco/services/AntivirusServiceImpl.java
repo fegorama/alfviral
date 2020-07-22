@@ -43,6 +43,7 @@ import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PersonService;
 import org.alfresco.service.namespace.QName;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.fegor.alfresco.behavior.OnUpdateReadScan;
@@ -93,6 +94,7 @@ public class AntivirusServiceImpl implements AntivirusService {
 	private boolean notifyUser;
 	private String notifyAdminTemplate;
 	private String notifyUserTemplate;
+	private boolean notifyAsynchronously;
 
 	private int icapPort;
 	private String icapHost;
@@ -293,77 +295,57 @@ public class AntivirusServiceImpl implements AntivirusService {
 	 * Notify
 	 */
 	private void notifyForInfected(NodeRef nodeRef) {
-		Action mailAction = actionService.createAction(MailActionExecuter.NAME);
-
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("dateEpoch", new Date(0));
-
 		NodeRef nrCurrentUser = personService.getPerson(authenticationService.getCurrentUserName());
+		String currentUserMail = (String) nodeService.getProperty(nrCurrentUser, ContentModel.PROP_EMAIL);
 
-		String currentUser = (String) nodeService.getProperty(nrCurrentUser, ContentModel.PROP_EMAIL);
-		String templatePATH = EMAIL_TEMPLATES_PATH + "/cm:";
-		ResultSet resultSet = null;
-
-		if (notifyUser == true) {
-			mailAction.setParameterValue(MailActionExecuter.PARAM_TO, currentUser);
-			mailAction.setParameterValue(MailActionExecuter.PARAM_SUBJECT, "Document infected!");
-
-			if (notifyUserTemplate == "") {
-				mailAction.setParameterValue(MailActionExecuter.PARAM_TEXT,
-						"File infected as NodeRef: " + nodeRef + ". Contacting with your administrator ASAP!");
-			}
-
-			else {
-				templatePATH += notifyUserTemplate + "\"";
-				resultSet = serviceRegistry.getSearchService().query(
-						new StoreRef(StoreRef.PROTOCOL_WORKSPACE, "SpacesStore"), SearchService.LANGUAGE_LUCENE,
-						templatePATH);
-
-				if (resultSet.length() == 0) {
-					logger.error("Template " + templatePATH + " not found.");
-					return;
-				}
-
-				mailAction.setParameterValue(MailActionExecuter.PARAM_TEMPLATE, resultSet.getNodeRef(0));
-				mailAction.setParameterValue(MailActionExecuter.PARAM_TEMPLATE_MODEL, (Serializable) model);
-			}
-
-			logger.info(
-					this.getClass().getName() + ": [Sending notify mail notify of infected to " + currentUser + "]");
-			actionService.executeAction(mailAction, nodeRef);
+		if (notifyUser) {
+			final String subject = "Document infected!";
+			final String alternativeText = "File infected as NodeRef: " + nodeRef + ". Contacting with your administrator ASAP!";
+			sendMailNotification(currentUserMail, subject, alternativeText, notifyUserTemplate, nodeRef);
 		}
 
-		templatePATH = EMAIL_TEMPLATES_PATH + "/cm:";
+		if (notifyAdmin) {
+			final String subject = "File infected!";
+			final String alternativeText = "File infected as NodeRef: " + nodeRef + " upload to user: " + currentUserMail;
 
-		if (notifyAdmin == true) {
 			NodeRef nrAdmin = personService.getPerson("admin");
-			String userAdmin = (String) nodeService.getProperty(nrAdmin, ContentModel.PROP_EMAIL);
-			mailAction.setParameterValue(MailActionExecuter.PARAM_TO, userAdmin);
-			mailAction.setParameterValue(MailActionExecuter.PARAM_SUBJECT, "File infected!");
-
-			if (notifyAdminTemplate != "") {
-				mailAction.setParameterValue(MailActionExecuter.PARAM_TEXT,
-						"File infected as NodeRef: " + nodeRef + " upload to user: " + currentUser);
-			}
-
-			else {
-				templatePATH += notifyAdminTemplate + "\"";
-				resultSet = serviceRegistry.getSearchService().query(
-						new StoreRef(StoreRef.PROTOCOL_WORKSPACE, "SpacesStore"), SearchService.LANGUAGE_LUCENE,
-						templatePATH);
-
-				if (resultSet.length() == 0) {
-					logger.error("Template " + templatePATH + " not found.");
-					return;
-				}
-
-				mailAction.setParameterValue(MailActionExecuter.PARAM_TEMPLATE, resultSet.getNodeRef(0));
-				mailAction.setParameterValue(MailActionExecuter.PARAM_TEMPLATE_MODEL, (Serializable) model);
-			}
-
-			logger.info(this.getClass().getName() + ": [Sending mail notify of infected to admin]");
-			actionService.executeAction(mailAction, nodeRef);
+			String userAdminMail = (String) nodeService.getProperty(nrAdmin, ContentModel.PROP_EMAIL);
+			sendMailNotification(userAdminMail, subject, alternativeText, notifyAdminTemplate, nodeRef);
 		}
+	}
+
+	private void sendMailNotification(String mailTo, String subject, String alternativeText, String templateName, NodeRef nodeRef) {
+		Action mailAction = actionService.createAction(MailActionExecuter.NAME);
+		Map<String, Object> model = new HashMap<>();
+		model.put("dateEpoch", new Date(0));
+		String templatePATH = EMAIL_TEMPLATES_PATH + "/cm:";
+		
+		mailAction.setParameterValue(MailActionExecuter.PARAM_TO, mailTo);
+		mailAction.setParameterValue(MailActionExecuter.PARAM_SUBJECT, subject);
+
+		if (StringUtils.isEmpty(templateName)) {
+			mailAction.setParameterValue(MailActionExecuter.PARAM_TEXT, alternativeText);
+		}
+
+		else {
+			templatePATH += templateName + "\"";
+			ResultSet resultSet = serviceRegistry.getSearchService().query(
+					new StoreRef(StoreRef.PROTOCOL_WORKSPACE, "SpacesStore"), SearchService.LANGUAGE_LUCENE,
+					templatePATH);
+
+			if (resultSet.length() == 0) {
+				logger.error("Template " + templatePATH + " not found.");
+				return;
+			}
+
+			mailAction.setParameterValue(MailActionExecuter.PARAM_TEMPLATE, resultSet.getNodeRef(0));
+			mailAction.setParameterValue(MailActionExecuter.PARAM_TEMPLATE_MODEL, (Serializable) model);
+		}
+
+		logger.info(
+				this.getClass().getName() + ": [Sending notify mail notify of infected to " + mailTo + "]");
+		mailAction.setExecuteAsynchronously(notifyAsynchronously);
+		actionService.executeAction(mailAction, nodeRef);
 	}
 
 	/**
@@ -420,6 +402,14 @@ public class AntivirusServiceImpl implements AntivirusService {
 	 */
 	public void setNotifyUser(boolean notifyUser) {
 		this.notifyUser = notifyUser;
+	}
+
+	public boolean isNotifyAsynchronously() {
+		return notifyAsynchronously;
+	}
+
+	public void setNotifyAsynchronously(boolean notifyAsynchronously) {
+		this.notifyAsynchronously = notifyAsynchronously;
 	}
 
 	/**
