@@ -144,11 +144,7 @@ public class AntivirusServiceImpl implements AntivirusService {
 		if (nodeService.exists(nodeRef)) {
 			contentReader = contentService.getReader(nodeRef, ContentModel.PROP_CONTENT);
 
-			if ((contentReader != null)
-					&& (fileExceptions.indexOf(contentReader.getMimetype()) == -1
-							&& (fileOnlyOrExceptions.toLowerCase()).equals(FILE_EXCEPTIONS))
-					|| (fileOnly.indexOf(contentReader.getMimetype()) != -1
-							&& (fileOnlyOrExceptions.toLowerCase()).equals(FILE_ONLY))) {
+			if (shouldScan(contentReader)) {
 				String contentUrl = contentReader.getContentUrl();
 				String contentPath = contentUrl.replaceFirst("store:/", this.store);
 
@@ -249,13 +245,24 @@ public class AntivirusServiceImpl implements AntivirusService {
 						logger.debug("[File: " + contentReader.getContentUrl() + " is clean");
 				}
 			}
-
-			else if ((!(fileOnlyOrExceptions.toLowerCase()).equals(FILE_ONLY))
-					|| (!(fileOnlyOrExceptions.toLowerCase()).equals(FILE_EXCEPTIONS))) {
-				logger.error("Property alfviral.file.only_or_exceptions not is '" + FILE_ONLY + "' or '"
-						+ FILE_EXCEPTIONS + "'");
-			}
 		}
+	}
+
+	private boolean shouldScan(final ContentReader contentReader) {
+		if ((!(fileOnlyOrExceptions.toLowerCase()).equals(FILE_ONLY))
+				&& (!(fileOnlyOrExceptions.toLowerCase()).equals(FILE_EXCEPTIONS))) {
+			logger.error("Property alfviral.file.only_or_exceptions not is '" + FILE_ONLY + "' or '" + FILE_EXCEPTIONS
+					+ "'");
+			return false;
+		}
+		if (contentReader != null) {
+			final boolean fileExceptionsMatches = fileExceptions.indexOf(contentReader.getMimetype()) == -1
+					&& (fileOnlyOrExceptions.toLowerCase()).equals(FILE_EXCEPTIONS);
+			final boolean fileOnlyMatches = fileOnly.indexOf(contentReader.getMimetype()) != -1
+					&& (fileOnlyOrExceptions.toLowerCase()).equals(FILE_ONLY);
+			return fileExceptionsMatches || fileOnlyMatches;
+		}
+		return false;
 	}
 
 	/**
