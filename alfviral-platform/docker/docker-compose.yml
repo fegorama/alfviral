@@ -1,0 +1,59 @@
+version: '3.4'
+services:
+#  Optional
+#  alfviral-platform-share:
+#    image: ${docker.share.image}:${alfresco.share.version}
+#    environment:
+#      REPO_HOST: alfviral-platform-acs
+#      REPO_PORT: 8080
+#    ports:
+#      - "${share.port}:8080"
+  alfviral-platform-acs:
+    image: alfresco-content-services-alfviral-platform:development
+    build:
+      dockerfile: ./Dockerfile
+      context: ../../../target
+    environment:
+      CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:8888 
+        -Dalfviral.mode=ICAP 
+        -Dalfviral.icap.host=alfresco-clamav 
+        -Dalfviral.icap.port=1344 
+        -Dalfviral.icap.service=srv_clamav"
+    ports:
+      - "${acs.port}:8080"
+      - "${acs.debug.port}:8888"
+    volumes:
+      - alfviral-platform-acs-volume:/usr/local/tomcat/alf_data
+    depends_on:
+      - alfviral-platform-postgres
+  alfviral-platform-postgres:
+    image: postgres:9.6
+    environment:
+      POSTGRES_DB: alfresco
+      POSTGRES_USER: alfresco
+      POSTGRES_PASSWORD: alfresco
+    command: postgres -c max_connections=300 -c log_min_messages=LOG
+    ports:
+      - "${postgres.port}:5432"
+    volumes:
+      - alfviral-platform-db-volume:/var/lib/postgresql/data
+  alfviral-platform-ass:
+    image: alfresco/alfresco-search-services:1.2.0
+    environment:
+      SOLR_ALFRESCO_HOST: alfviral-platform-acs
+      SOLR_ALFRESCO_PORT: 8080
+      SOLR_SOLR_HOST: alfviral-platform-ass
+      SOLR_SOLR_PORT: 8983
+      SOLR_CREATE_ALFRESCO_DEFAULTS: alfresco,archive
+    ports:
+      - "8983:8983"
+    volumes:
+      - alfviral-platform-ass-volume:/opt/alfresco-search-services/contentstore
+      - alfviral-platform-ass-volume:/opt/alfresco-search-services/data
+volumes:
+  alfviral-platform-acs-volume:
+    external: true
+  alfviral-platform-db-volume:
+    external: true
+  alfviral-platform-ass-volume:
+    external: true

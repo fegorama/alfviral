@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>Alfresco Virus Alert</shortname>
+  <description>Alfresco Virus Alert</description>
+   <url>/protect/alfviral?nref={nref}</url>
+   <format default="text">extension</format>
+   <authentication>user</authentication>
+   <transaction>required</transaction>
+</webscript>

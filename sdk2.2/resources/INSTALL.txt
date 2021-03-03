@@ -1,0 +1,10 @@
+
+English:
+1. Unzip alfviral-1.3.1-beta.zip file 
+2. Install alfviral-1.3.1-beta.amp utility module using alfresco-mmt.jar 
+3. Copy alfviral-1.3.1-beta.jar module {tomcat}/shared/lib
+
+Español:
+1. Descomprimir archivo alfviral-1.3.1-beta.zip
+2. Instalar el módulo alfviral-1.3.1-beta.amp usando la utilidad alfresco-mmt.jar
+3. Copiar el módulo alfviral-1.3.1-beta.jar en {tomcat}/shared/lib
