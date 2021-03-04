@@ -3,12 +3,10 @@ version: '3.7'
 
 services:
   av:
-    #debian: image: mkodockx/docker-clamav
-    #image: mkodockx/docker-clamav:alpine
     build: 
       dockerfile: ./Dockerfile
-      context: ./clamav-icap-docker
-    container_name: alfresco-clamav
+      context: ./build
+    container_name: alfresco-security-protection-services
     restart: unless-stopped
     ports:
         - published: 3310
