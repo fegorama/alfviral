@@ -2,7 +2,7 @@
 <model name="ava:alfviralModel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
 	<!-- Optional meta-data about the model -->
 	<description>Alfresco Virus Alarm Model</description>
-	<author>Fernando González Ruano (twitter://fegorama)</author>
+	<author>Fernando González Ruano (www.fegor.com)</author>
 	<version>1.0</version>
 	<imports>
 		<import uri="http://www.alfresco.org/model/dictionary/1.0"

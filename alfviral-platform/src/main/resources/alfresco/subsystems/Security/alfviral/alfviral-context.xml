@@ -2,7 +2,7 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 <beans>
 
-	<bean id="antivirusService" class="com.fegor.alfresco.services.AntivirusServiceImpl">               
+	<bean id="antivirusService" class="com.fegorsoft.alfresco.services.AntivirusServiceImpl">               
         <property name="serviceRegistry">
             <ref bean="ServiceRegistry" />
         </property>
@@ -121,12 +121,12 @@
                     <!-- En Alfresco 4.0, la plantilla de FreeMarker debe contener caracteres 
                         de "escape" con el carácter "\". P.e. \$\{selectSingleNode(...)\} -->
                     <value>\$\{selectSingleNode('workspace://SpacesStore', 'lucene', 
-                        'PATH:"/app:company_home/app:dictionary/app:scripts/cm:com/cm:fegor/cm:alfviral/cm:ScriptScanFolder.js"' 
+                        'PATH:"/app:company_home/app:dictionary/app:scripts/cm:com/cm:fegorsoft/cm:alfviral/cm:ScriptScanFolder.js"' 
                         )\}</value>
                     <!-- En Alfresco 3.4e Community -->
                     <!-- <value>#{"${"}selectSingleNode('workspace://SpacesStore&#39;,
                         'lucene',
-                        'PATH:"/app:company_home/app:dictionary/app:scripts/cm:com/cm:fegor/cm:alfviral/cm:ScriptScanFolder.js"'
+                        'PATH:"/app:company_home/app:dictionary/app:scripts/cm:com/cm:fegorsoft/cm:alfviral/cm:ScriptScanFolder.js"'
                         )#{"}"}</value> -->
                 </entry>
             </map>
@@ -207,7 +207,7 @@
 
     <!-- Behavior context -->
 
-    <bean id="alfviral.behavior" class="com.fegor.alfresco.behavior.OnUpdateReadScan"
+    <bean id="alfviral.behavior" class="com.fegorsoft.alfresco.behavior.OnUpdateReadScan"
         init-method="init">
         <property name="policyComponent">
             <ref bean="policyComponent" />
@@ -231,7 +231,7 @@
     
 	<!-- Beans of scans -->
 	
-    <bean id="inStreamScan" class="com.fegor.alfresco.security.antivirus.InStreamScan">
+    <bean id="inStreamScan" class="com.fegorsoft.alfresco.security.antivirus.InStreamScan">
         <property name="nodeService">
             <ref bean="nodeService" />
         </property>
@@ -249,7 +249,7 @@
         </property>
     </bean>
 
-    <bean id="commandScan" class="com.fegor.alfresco.security.antivirus.CommandScan">
+    <bean id="commandScan" class="com.fegorsoft.alfresco.security.antivirus.CommandScan">
         <property name="nodeService">
             <ref bean="nodeService" />
         </property>
@@ -258,7 +258,7 @@
         </property>
     </bean>
 
-    <bean id="virusTotalScan" class="com.fegor.alfresco.security.antivirus.VirusTotalScan">
+    <bean id="virusTotalScan" class="com.fegorsoft.alfresco.security.antivirus.VirusTotalScan">
         <property name="nodeService">
             <ref bean="nodeService" />
         </property>
@@ -270,7 +270,7 @@
         </property>
     </bean>
 
-    <bean id="icapScan" class="com.fegor.alfresco.security.antivirus.ICAPScan">
+    <bean id="icapScan" class="com.fegorsoft.alfresco.security.antivirus.ICAPScan">
         <property name="nodeService">
             <ref bean="nodeService" />
         </property>

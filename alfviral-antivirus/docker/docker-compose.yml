@@ -1,21 +1,24 @@
-# example docker-compose configuration file for using mkodockx/docker-clamav
+# Alfresco Security and Protection Services (ClamAV+ICAP)
 version: '3.7'
 
 services:
-  av:
+  alfviral-clamav-icap:
     build: 
       dockerfile: ./Dockerfile
       context: ./build
-    container_name: alfresco-security-protection-services
     restart: unless-stopped
     ports:
         - published: 3310
           target: 3310
     volumes:
       - clam:/var/lib/clamav
+      - alfviral-platform-acs-volume:/usr/local/tomcat/alf_data
 
 volumes:
   clam:
+    external: false
+  alfviral-platform-acs-volume:
+    external: true
 
 networks:
   outpost_network:

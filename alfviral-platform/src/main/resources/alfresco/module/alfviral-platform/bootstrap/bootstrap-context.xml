@@ -6,7 +6,7 @@
 		parent="module.baseComponent">
 		
 		<property name="moduleId" value="${project.artifactId}" />
-		<property name="name" value="com.fegor.module.${project.artifactId}.bootstrapSpaces" />
+		<property name="name" value="com.fegorsoft.module.${project.artifactId}.bootstrapSpaces" />
 		<property name="description" value="Datos iniciales" />
 		<property name="sinceVersion" value="1.0" />
 		<property name="appliesFromVersion" value="1.0" />

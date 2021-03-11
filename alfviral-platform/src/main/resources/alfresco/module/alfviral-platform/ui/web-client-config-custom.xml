@@ -43,7 +43,7 @@
 	<config>
 		<actions>
 			<action id="alfviral_virusscan_document">
- 				<evaluator>com.fegor.alfresco.evaluator.VirusScanEvaluator
+ 				<evaluator>com.fegorsoft.alfresco.evaluator.VirusScanEvaluator
 				</evaluator>
 				<label-id>alfviral.label.action.virusscan</label-id>
 				<image>/images/alfviral/icons/action-scan-file-16.png</image>

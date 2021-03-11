@@ -51,7 +51,7 @@
 
 	<!-- Repository action -->
 
-	<bean id="alfviral.virusscan.action" class="com.fegor.alfresco.action.VirusScanAction"
+	<bean id="alfviral.virusscan.action" class="com.fegorsoft.alfresco.action.VirusScanAction"
 		parent="action-executer">
 		<property name="antivirusService">
 			<ref bean="antivirusService.proxy" />
@@ -61,7 +61,7 @@
 	<!-- Registry and Service -->
 	
     <bean id="AntivirusServiceRegistry"
-        class="com.fegor.alfresco.services.AntivirusServiceDescriptorRegistry"
+        class="com.fegorsoft.alfresco.services.AntivirusServiceDescriptorRegistry"
         parent="ServiceRegistry">
     </bean>
         
@@ -97,14 +97,14 @@
         </property>
         <property name="interfaces">
             <list>
-                <value>com.fegor.alfresco.services.AntivirusService</value>
+                <value>com.fegorsoft.alfresco.services.AntivirusService</value>
             </list>
         </property>
     </bean>
  
 	
  <!-- 
-	<bean id="antivirusService" class="com.fegor.alfresco.services.AntivirusService">
+	<bean id="antivirusService" class="com.fegorsoft.alfresco.services.AntivirusService">
 		<property name="contentService">
 			<ref bean="contentService" />
 		</property>

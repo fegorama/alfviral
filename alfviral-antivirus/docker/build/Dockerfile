@@ -30,6 +30,10 @@ RUN mkdir /run/clamav
 RUN chmod 0770 /run/clamav
 RUN chown -R clamav:clamav /run/clamav
 
+# For Alfresco
+#RUN mkdir -p /usr/local/tomcat/alf_data
+
+# Expose ports for ICAP and STREAM
 EXPOSE 1344
 EXPOSE 3310
 

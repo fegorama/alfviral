@@ -11,7 +11,7 @@ services:
       REPO_PORT: ${acs.port}
     ports:
       - "${share.port}:8080"
-      - "${share.debug.port}:8888"
+      #- "${share.debug.port}:8888"
 # Optional
 #  alfviral-share-acs:
 #    image: ${docker.acs.image}:${alfresco.platform.version}
