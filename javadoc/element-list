@@ -1,0 +1,9 @@
+com.fegorsoft.alfresco.action
+com.fegorsoft.alfresco.behavior
+com.fegorsoft.alfresco.evaluator
+com.fegorsoft.alfresco.model
+com.fegorsoft.alfresco.protocols.icap
+com.fegorsoft.alfresco.security.antivirus
+com.fegorsoft.alfresco.security.util
+com.fegorsoft.alfresco.security.util.test
+com.fegorsoft.alfresco.services
