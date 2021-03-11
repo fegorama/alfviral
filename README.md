@@ -37,11 +37,11 @@ See [Alfresco docs for extension-packaging] (https://docs.alfresco.com/content-s
 
 ## Contributing 🖇️
 
-Please, see the [CONTRIBUTING.md](https://github.com/fegorama/alfviral/CONTRIBUTING.md) for details of our code of conduct, and the process for submitting pull requests.
+Please, see the [CONTRIBUTING.md](https://github.com/fegorama/alfviral/blob/master/CONTRIBUTING.md) for details of our code of conduct, and the process for submitting pull requests.
 
 ## Versions 📌
 
-See [tags in this reposiroty](https://github.com/fegorama/alfviral/tags).
+See [tags in this repository](https://github.com/fegorama/alfviral/tags).
 
 ## License 📄
 
