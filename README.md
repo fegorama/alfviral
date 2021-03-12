@@ -27,13 +27,13 @@ docker-compose -f docker-compose.yml up --build
 * ICAP (Internet Content Adaptation Protocol) for scanning many antivirus engines: Symantec, McAfee, Sophos, ...
 * Email notify to user and admin in case of infection
 * Arquitecture has service: AntivirusService
-* For package installation or docker
+* For package installation (JAR) or Docker
 
 ### Deploy 🔧
 
 To deploy in package version copy JAR files with platform and share Alfresco. 
 
-See [Alfresco docs for extension-packaging] (https://docs.alfresco.com/content-services/latest/develop/extension-packaging/)
+See [Alfresco docs for extension-packaging](https://docs.alfresco.com/content-services/latest/develop/extension-packaging/)
 
 ## Contributing 🖇️
 
@@ -49,11 +49,11 @@ This project is under Apache License - see [LICENSE.md](LICENSE.md) for more det
 
 ## Thanks to 🎁
 
-* [Alfresco] (https://www.alfresco.com)
-* [Order of the bee] (https://orderofthebee.net/)
+* [Alfresco](https://www.alfresco.com)
+* [Order of the bee](https://orderofthebee.net/)
 
 ## Other information ✒️
 
-For Alfresco 4.2.x before versions go to [Google Code] (https://code.google.com/p/alfviral/)
+For Alfresco 4.2.x before versions go to [Google Code](https://code.google.com/p/alfviral/)
 
-Alfresco Summit 2013: [Presentation in PDF] (https://github.com/fegorama/alfviral/blob/master/docs/Alfviral_Alfresco_Summit_2013_v1.pdf)
+Alfresco Summit 2013: [Presentation in PDF](https://github.com/fegorama/alfviral/blob/master/docs/Alfviral_Alfresco_Summit_2013_v1.pdf)
