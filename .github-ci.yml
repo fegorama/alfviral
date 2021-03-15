@@ -1,0 +1,14 @@
+stages:
+    - platform
+    - share
+
+
+platform:
+    stage: platform
+    trigger:
+        project: /alfviral-platform
+    
+share:
+    stage: share
+    trigger:
+        project: /alfviral-share
