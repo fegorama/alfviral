@@ -31,13 +31,13 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Archive alfviral-amp artifact
+    - name: Archive alfviral-jar artifact
       uses: actions/upload-artifact@v2
       with:
-        name: alfviral
-        path: alfviral/target/alfviral-*.amp
-    - name: Archive alfviral-share-amp artifact
+        name: alfviral-platform
+        path: alfviral/target/alfviral-platform-*.jar
+    - name: Archive alfviral-share-jar artifact
       uses: actions/upload-artifact@v2
       with:
         name: alfviral-share
-        path: alfviral-share/target/alfviral-share-*.amp
+        path: alfviral-share/target/alfviral-share-*.jar
