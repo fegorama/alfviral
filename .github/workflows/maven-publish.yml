@@ -31,7 +31,7 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Archive alfviral-jar artifact
+    - name: Archive alfviral-platform-jar artifact
       uses: actions/upload-artifact@v2
       with:
         name: alfviral-platform
