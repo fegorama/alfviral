@@ -4,6 +4,16 @@ ARG TOMCAT_DIR=/usr/local/tomcat
 
 USER root
 
+# Install ssh for call commands (clamscan)
+RUN yum -y install openssh-clients
+RUN yum -y install sshpass
+
+ARG ALFSCAN=/usr/bin/alfscan
+RUN echo "#!/bin/bash" > ${ALFSCAN}
+RUN echo "sshpass -p alfresco ssh -o 'StrictHostKeyChecking no' alfresco@alfviral-clamav-icap clamdscan" >> ${ALFSCAN}
+RUN echo "return $?" >> ${ALFSCAN}
+RUN chmod 755 ${ALFSCAN}
+
 # Copy Dockerfile to avoid an error if no JARs exist
 COPY Dockerfile extensions/*.jar $TOMCAT_DIR/webapps/alfresco/WEB-INF/lib/
 

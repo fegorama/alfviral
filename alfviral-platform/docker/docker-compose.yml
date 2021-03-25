@@ -15,10 +15,9 @@ services:
       context: ../../../target
     environment:
       CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:8888 
-        -Dalfviral.mode=ICAP 
-        -Dalfviral.icap.host=alfviral-clamav-icap
-        -Dalfviral.icap.port=1344
-        -Dalfviral.icap.service=srv_clamav
+        -Ddir.root=/usr/local/tomcat/alf_data
+        -Dalfviral.mode=COMMAND 
+        -Dalfviral.command.exec=alfscan
         "
     ports:
       - "${acs.port}:8080"

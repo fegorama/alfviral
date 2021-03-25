@@ -10,14 +10,19 @@ services:
     ports:
         - published: 3310
           target: 3310
+        - published: 22
+          target: 22
     volumes:
       - clam:/var/lib/clamav
       - alfviral-platform-acs-volume:/usr/local/tomcat/alf_data
+      - openssh-keys-volume:/etc/ssh/keys
 
 volumes:
   clam:
     external: false
   alfviral-platform-acs-volume:
+    external: true
+  openssh-keys-volume:
     external: true
 
 networks:

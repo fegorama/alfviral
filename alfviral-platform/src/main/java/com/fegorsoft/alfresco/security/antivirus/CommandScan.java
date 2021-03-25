@@ -87,7 +87,6 @@ public final class CommandScan implements VirusScanMode {
 			ProcessBuilder pb = new ProcessBuilder(this.command);
 			Process process = pb.start();
 			res = process.waitFor();
-			this.command.subList(1, this.command.size()).clear();
 		} 
 		
 		catch (IOException e) {
@@ -96,6 +95,11 @@ public final class CommandScan implements VirusScanMode {
 		
 		catch (InterruptedException e) {
 			logger.error(" Error in execute command.", e);
+			
+		} 
+		
+		finally {
+			this.command.subList(1, this.command.size()).clear();
 		}
 
 		if (res != 0) {
