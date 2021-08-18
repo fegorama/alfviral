@@ -62,11 +62,13 @@
             <scope>test</scope>
         </dependency>
          -->
-        <dependency>
+         
+         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
+            <version>[4.5.13,)</version>
             <scope>test</scope>
-        </dependency>
+          </dependency>
 
         <!-- The main Alfresco Repo dependency for compiling Java code in src/main/java -->
         <dependency>
