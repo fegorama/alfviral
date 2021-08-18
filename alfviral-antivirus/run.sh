@@ -2,12 +2,6 @@
 
 export COMPOSE_FILE_PATH="${PWD}/docker/docker-compose.yml"
 
-if [ -z "${M2_HOME}" ]; then
-  export MVN_EXEC="mvn"
-else
-  export MVN_EXEC="${M2_HOME}/bin/mvn"
-fi
-
 start() {
     docker volume create openssh-keys-volume
     docker-compose -f "$COMPOSE_FILE_PATH" up --build -d
@@ -23,10 +17,6 @@ purge() {
     docker volume rm -f openssh-keys-volume
 }
 
-build() {
-    $MVN_EXEC clean package
-}
-
 tail() {
     docker-compose -f "$COMPOSE_FILE_PATH" logs -f
 }
@@ -35,28 +25,7 @@ tail_all() {
     docker-compose -f "$COMPOSE_FILE_PATH" logs --tail="all"
 }
 
-prepare_test() {
-    $MVN_EXEC verify -DskipTests=true
-}
-
-test() {
-    $MVN_EXEC verify
-}
-
 case "$1" in
-  build_start)
-    down
-    build
-    start
-    tail
-    ;;
-  build_start_it_supported)
-    down
-    build
-    prepare_test
-    start
-    tail
-    ;;
   start)
     start
     tail
@@ -71,18 +40,6 @@ case "$1" in
   tail)
     tail
     ;;
-  build_test)
-    down
-    build
-    prepare_test
-    start
-    test
-    tail_all
-    down
-    ;;
-  test)
-    test
-    ;;
   *)
-    echo "Usage: $0 {build_start|build_start_it_supported|start|stop|purge|tail|build_test|test}"
+    echo "Usage: $0 {start|stop|purge|tail}"
 esac
