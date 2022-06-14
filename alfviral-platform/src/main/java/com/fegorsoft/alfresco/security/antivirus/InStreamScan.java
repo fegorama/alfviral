@@ -19,11 +19,13 @@ package com.fegorsoft.alfresco.security.antivirus;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
+import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.apache.log4j.Logger;
@@ -40,8 +42,8 @@ public final class InStreamScan implements VirusScanMode {
 
 	private final Logger logger = Logger.getLogger(InStreamScan.class);
 
-	private byte[] data;
-	private int chunkSize = 4096;
+	private ContentReader dataReader;
+	private int chunkSizeInBytes = 4096;
 	private int port;
 	private String host;
 	private int timeout;
@@ -132,36 +134,38 @@ public final class InStreamScan implements VirusScanMode {
 
 		DataOutputStream dataOutputStream = null;
 		BufferedReader bufferedReader = null;
+		InputStream inputStream = dataReader.getContentInputStream();
 
 		String res = null;
 		try {
 			if (logger.isDebugEnabled()) {
 				logger.debug(getClass().getName() + "Send zINSTREAM");
 			}
-			
+
 			dataOutputStream = new DataOutputStream(socket.getOutputStream());
+			bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "ASCII"));
 			dataOutputStream.writeBytes("zINSTREAM\0");
 
 			if (logger.isDebugEnabled()) {
-				logger.debug(getClass().getName() + "Send stream for  " + data.length + " bytes");
+				logger.debug(getClass().getName() + "Send stream for  " + inputStream.available() + " bytes");
 			}
 
-			while (i < data.length) {
-				if (i + chunkSize >= data.length) {
-					chunkSize = data.length - i;
+			byte[] chunk = new byte[chunkSizeInBytes];
+			int length = inputStream.read(chunk);
+			while (length >= 0) {
+				dataOutputStream.writeInt(length);
+				dataOutputStream.write(chunk, 0, length);
+				if (bufferedReader.ready()) {
+					res = bufferedReader.readLine();
+					throw new IOException(res);
 				}
-				dataOutputStream.writeInt(chunkSize);
-				dataOutputStream.write(data, i, chunkSize);
-				i += chunkSize;
+				length = inputStream.read(chunk);
 			}
 
 			dataOutputStream.writeInt(0);
 			dataOutputStream.write('\0');
 			dataOutputStream.flush();
 
-			bufferedReader = new BufferedReader(new InputStreamReader(
-					socket.getInputStream(), "ASCII"));
-				
 			res = bufferedReader.readLine();
 			
 			if (logger.isDebugEnabled()) {
@@ -174,6 +178,9 @@ public final class InStreamScan implements VirusScanMode {
 			
 			if (dataOutputStream != null)
 				dataOutputStream.close();
+
+			if (inputStream != null)
+				inputStream.close();
 			
 			if (socket != null)
 				socket.close();
@@ -249,17 +256,17 @@ public final class InStreamScan implements VirusScanMode {
 	}
 
 	/**
-	 * @param data
+	 * @param dataReader
 	 */
-	public void setData(byte[] data) {
-		this.data = data;
+	public void setDataReader(ContentReader dataReader) {
+		this.dataReader = dataReader;
 	}
 
 	/**
-	 * @param chunkSize
+	 * @param chunkSizeInBytes
 	 */
-	public void setChunkSize(int chunkSize) {
-		this.chunkSize = chunkSize;
+	public void setChunkSizeInBytes(int chunkSizeInBytes) {
+		this.chunkSizeInBytes = chunkSizeInBytes;
 	}
 
 	/**

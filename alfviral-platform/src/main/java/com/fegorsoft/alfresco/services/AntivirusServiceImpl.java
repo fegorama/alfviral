@@ -183,11 +183,11 @@ public class AntivirusServiceImpl implements AntivirusService {
 				else if (mode.toUpperCase().equals(VirusScanMode.ScanModeInStream)) {
 
 					try {
-						inStreamScan.setChunkSize(inStreamChunkSize);
+						inStreamScan.setChunkSizeInBytes(inStreamChunkSize);
 						inStreamScan.setHost(inStreamHost);
 						inStreamScan.setPort(inStreamPort);
 						inStreamScan.setTimeout(inStreamTimeout);
-						inStreamScan.setData(contentReader.getContentString().getBytes());
+						inStreamScan.setDataReader(contentReader);
 						res = inStreamScan.scan(nodeRef);
 					}
 
