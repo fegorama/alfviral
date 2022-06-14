@@ -43,7 +43,7 @@ public final class InStreamScan implements VirusScanMode {
 	private final Logger logger = Logger.getLogger(InStreamScan.class);
 
 	private ContentReader dataReader;
-	private int chunkSize = 4096;
+	private int chunkSizeInBytes = 4096;
 	private int port;
 	private String host;
 	private int timeout;
@@ -150,7 +150,7 @@ public final class InStreamScan implements VirusScanMode {
 				logger.debug(getClass().getName() + "Send stream for  " + inputStream.available() + " bytes");
 			}
 
-			byte[] chunk = new byte[chunkSize];
+			byte[] chunk = new byte[chunkSizeInBytes];
 			int length = inputStream.read(chunk);
 			while (length >= 0) {
 				dataOutputStream.writeInt(length);
@@ -263,10 +263,10 @@ public final class InStreamScan implements VirusScanMode {
 	}
 
 	/**
-	 * @param chunkSize
+	 * @param chunkSizeInBytes
 	 */
-	public void setChunkSize(int chunkSize) {
-		this.chunkSize = chunkSize;
+	public void setChunkSizeInBytes(int chunkSizeInBytes) {
+		this.chunkSizeInBytes = chunkSizeInBytes;
 	}
 
 	/**
