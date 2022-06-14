@@ -244,7 +244,7 @@
         <property name="timeout">
             <value>${alfviral.instream.timeout}</value>
         </property>
-        <property name="chunkSize">
+        <property name="chunkSizeInBytes">
             <value>${alfviral.instream.chunkSize}</value>
         </property>
     </bean>
