@@ -147,7 +147,7 @@ public final class InStreamScan implements VirusScanMode {
 			dataOutputStream.writeBytes("zINSTREAM\0");
 
 			if (logger.isDebugEnabled()) {
-				logger.debug(getClass().getName() + "Send stream for  " + inputStream.available() + " bytes");
+				logger.debug(getClass().getName() + "Send stream for " + dataReader.getSize() + " bytes");
 			}
 
 			byte[] chunk = new byte[chunkSizeInBytes];
