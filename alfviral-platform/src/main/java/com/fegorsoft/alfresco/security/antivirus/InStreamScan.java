@@ -101,7 +101,7 @@ public final class InStreamScan implements VirusScanMode {
 		try {
 			res = scan();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error while scanning NodeRef: " + nodeRef, e);
 		}
 		return res;
 	}
@@ -186,10 +186,15 @@ public final class InStreamScan implements VirusScanMode {
 				socket.close();
 		}
 
+		res = res.trim();
+		if (res.startsWith("INSTREAM size limit exceeded")) {
+			throw new IOException(res);
+		}
+
 		/*
 		 * if is OK then not infected, else, infected...
 		 */
-		if (!res.trim().equals("stream: OK")) {
+		if (!res.equals("stream: OK")) {
 			result = 1;
 			addAspect();
 		}
