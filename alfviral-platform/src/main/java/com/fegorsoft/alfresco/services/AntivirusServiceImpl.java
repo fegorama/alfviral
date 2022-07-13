@@ -322,7 +322,7 @@ public class AntivirusServiceImpl implements AntivirusService {
 			String userMail = (String) nodeService.getProperty(userNodeRef, ContentModel.PROP_EMAIL);
 			final String subject = "Document infected!";
 			final String alternativeText = "File infected as NodeRef: " + nodeRef + ". Contacting with your administrator ASAP!";
-			sendMailNotification(userMail, subject, alternativeText, notifyUserTemplate, nodeRef);
+			sendMailNotification(userMail, subject, alternativeText, notifyUserTemplate, nodeRef, userNodeRef);
 		}
 
 		if (notifyAdmin) {
@@ -331,14 +331,15 @@ public class AntivirusServiceImpl implements AntivirusService {
 
 			NodeRef nrAdmin = personService.getPerson("admin");
 			String userAdminMail = (String) nodeService.getProperty(nrAdmin, ContentModel.PROP_EMAIL);
-			sendMailNotification(userAdminMail, subject, alternativeText, notifyAdminTemplate, nodeRef);
+			sendMailNotification(userAdminMail, subject, alternativeText, notifyAdminTemplate, nodeRef, userNodeRef);
 		}
 	}
 
-	private void sendMailNotification(String mailTo, String subject, String alternativeText, String templateName, NodeRef nodeRef) {
+	private void sendMailNotification(String mailTo, String subject, String alternativeText, String templateName, NodeRef nodeRef, NodeRef uploader) {
 		Action mailAction = actionService.createAction(MailActionExecuter.NAME);
 		Map<String, Object> model = new HashMap<>();
 		model.put("dateEpoch", new Date(0));
+		model.put("uploader", uploader);
 		String templatePATH = EMAIL_TEMPLATES_PATH + "/cm:";
 		
 		mailAction.setParameterValue(MailActionExecuter.PARAM_TO, mailTo);
