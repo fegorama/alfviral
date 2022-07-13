@@ -310,18 +310,23 @@ public class AntivirusServiceImpl implements AntivirusService {
 	 * Notify
 	 */
 	private void notifyForInfected(NodeRef nodeRef) {
-		NodeRef nrCurrentUser = personService.getPerson(authenticationService.getCurrentUserName());
-		String currentUserMail = (String) nodeService.getProperty(nrCurrentUser, ContentModel.PROP_EMAIL);
+		String userName = (String) nodeService.getProperty(nodeRef, ContentModel.PROP_CREATOR);
+		NodeRef userNodeRef = personService.getPersonOrNull(userName);
+		if (userNodeRef == null) {
+			logger.error("Cannot notify user " + userName);
+			return;
+		}
 
 		if (notifyUser) {
+			String userMail = (String) nodeService.getProperty(userNodeRef, ContentModel.PROP_EMAIL);
 			final String subject = "Document infected!";
 			final String alternativeText = "File infected as NodeRef: " + nodeRef + ". Contacting with your administrator ASAP!";
-			sendMailNotification(currentUserMail, subject, alternativeText, notifyUserTemplate, nodeRef);
+			sendMailNotification(userMail, subject, alternativeText, notifyUserTemplate, nodeRef);
 		}
 
 		if (notifyAdmin) {
 			final String subject = "File infected!";
-			final String alternativeText = "File infected as NodeRef: " + nodeRef + " upload to user: " + currentUserMail;
+			final String alternativeText = "File infected as NodeRef: " + nodeRef + " upload to user: " + userName;
 
 			NodeRef nrAdmin = personService.getPerson("admin");
 			String userAdminMail = (String) nodeService.getProperty(nrAdmin, ContentModel.PROP_EMAIL);
