@@ -93,6 +93,7 @@ public class AntivirusServiceImpl implements AntivirusService {
 	private String mode;
 	private boolean notifyAdmin;
 	private boolean notifyUser;
+	private String notifyFrom;
 	private String notifyAdminTemplate;
 	private String notifyUserTemplate;
 	private boolean notifyAsynchronously;
@@ -342,6 +343,9 @@ public class AntivirusServiceImpl implements AntivirusService {
 		
 		mailAction.setParameterValue(MailActionExecuter.PARAM_TO, mailTo);
 		mailAction.setParameterValue(MailActionExecuter.PARAM_SUBJECT, subject);
+		if (!StringUtils.isEmpty(notifyFrom)) {
+			mailAction.setParameterValue(MailActionExecuter.PARAM_FROM, notifyFrom);
+		}
 
 		if (StringUtils.isEmpty(templateName)) {
 			mailAction.setParameterValue(MailActionExecuter.PARAM_TEXT, alternativeText);
@@ -600,5 +604,9 @@ public class AntivirusServiceImpl implements AntivirusService {
 	 */
 	public void setCronExpression(String cronExpression) {
 		this.runScriptScanFolder.setCronExpression(cronExpression);
+	}
+
+	public void setNotifyFrom(String notifyFrom) {
+		this.notifyFrom = notifyFrom;
 	}
 }
