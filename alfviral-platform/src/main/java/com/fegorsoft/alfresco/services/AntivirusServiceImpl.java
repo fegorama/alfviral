@@ -93,6 +93,7 @@ public class AntivirusServiceImpl implements AntivirusService {
 	private String mode;
 	private boolean notifyAdmin;
 	private boolean notifyUser;
+	private String notifyFrom;
 	private String notifyAdminTemplate;
 	private String notifyUserTemplate;
 	private boolean notifyAsynchronously;
@@ -310,33 +311,42 @@ public class AntivirusServiceImpl implements AntivirusService {
 	 * Notify
 	 */
 	private void notifyForInfected(NodeRef nodeRef) {
-		NodeRef nrCurrentUser = personService.getPerson(authenticationService.getCurrentUserName());
-		String currentUserMail = (String) nodeService.getProperty(nrCurrentUser, ContentModel.PROP_EMAIL);
+		String userName = (String) nodeService.getProperty(nodeRef, ContentModel.PROP_CREATOR);
+		NodeRef userNodeRef = personService.getPersonOrNull(userName);
+		if (userNodeRef == null) {
+			logger.error("Cannot notify user " + userName);
+			return;
+		}
 
 		if (notifyUser) {
+			String userMail = (String) nodeService.getProperty(userNodeRef, ContentModel.PROP_EMAIL);
 			final String subject = "Document infected!";
-			final String alternativeText = "File infected as NodeRef: " + nodeRef + ". Contacting with your administrator ASAP!";
-			sendMailNotification(currentUserMail, subject, alternativeText, notifyUserTemplate, nodeRef);
+			final String alternativeText = "File infected with NodeRef: " + nodeRef + ". Contact your administrator ASAP.";
+			sendMailNotification(userMail, subject, alternativeText, notifyUserTemplate, nodeRef, userNodeRef);
 		}
 
 		if (notifyAdmin) {
 			final String subject = "File infected!";
-			final String alternativeText = "File infected as NodeRef: " + nodeRef + " upload to user: " + currentUserMail;
+			final String alternativeText = "File infected with NodeRef: " + nodeRef + " uploaded by user: " + userName;
 
 			NodeRef nrAdmin = personService.getPerson("admin");
 			String userAdminMail = (String) nodeService.getProperty(nrAdmin, ContentModel.PROP_EMAIL);
-			sendMailNotification(userAdminMail, subject, alternativeText, notifyAdminTemplate, nodeRef);
+			sendMailNotification(userAdminMail, subject, alternativeText, notifyAdminTemplate, nodeRef, userNodeRef);
 		}
 	}
 
-	private void sendMailNotification(String mailTo, String subject, String alternativeText, String templateName, NodeRef nodeRef) {
+	private void sendMailNotification(String mailTo, String subject, String alternativeText, String templateName, NodeRef nodeRef, NodeRef uploader) {
 		Action mailAction = actionService.createAction(MailActionExecuter.NAME);
 		Map<String, Object> model = new HashMap<>();
 		model.put("dateEpoch", new Date(0));
+		model.put("uploader", uploader);
 		String templatePATH = EMAIL_TEMPLATES_PATH + "/cm:";
 		
 		mailAction.setParameterValue(MailActionExecuter.PARAM_TO, mailTo);
 		mailAction.setParameterValue(MailActionExecuter.PARAM_SUBJECT, subject);
+		if (!StringUtils.isEmpty(notifyFrom)) {
+			mailAction.setParameterValue(MailActionExecuter.PARAM_FROM, notifyFrom);
+		}
 
 		if (StringUtils.isEmpty(templateName)) {
 			mailAction.setParameterValue(MailActionExecuter.PARAM_TEXT, alternativeText);
@@ -595,5 +605,9 @@ public class AntivirusServiceImpl implements AntivirusService {
 	 */
 	public void setCronExpression(String cronExpression) {
 		this.runScriptScanFolder.setCronExpression(cronExpression);
+	}
+
+	public void setNotifyFrom(String notifyFrom) {
+		this.notifyFrom = notifyFrom;
 	}
 }

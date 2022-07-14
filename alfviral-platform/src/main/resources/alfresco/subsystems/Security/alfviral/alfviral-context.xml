@@ -65,7 +65,10 @@
         </property>    
         <property name="notifyUser">
             <value>${alfviral.notify.user}</value>
-        </property> 
+        </property>
+        <property name="notifyFrom">
+            <value>${alfviral.notify.from}</value>
+        </property>
         <property name="notifyUserTemplate">
             <value>${alfviral.notify.user.template}</value>
         </property>		
