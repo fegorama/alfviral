@@ -187,16 +187,19 @@ public final class InStreamScan implements VirusScanMode {
 		}
 
 		res = res.trim();
-		if (res.startsWith("INSTREAM size limit exceeded")) {
-			throw new IOException(res);
-		}
 
 		/*
 		 * if is OK then not infected, else, infected...
 		 */
-		if (!res.equals("stream: OK")) {
+		if (res.equals("stream: OK")) {
+			result = 0;
+		} else if (res.endsWith("FOUND")) {
 			result = 1;
 			addAspect();
+		} else if (res.endsWith("ERROR")) {
+			throw new IOException(res);
+		} else {
+			throw new IOException(res);
 		}
 
 		return result;
