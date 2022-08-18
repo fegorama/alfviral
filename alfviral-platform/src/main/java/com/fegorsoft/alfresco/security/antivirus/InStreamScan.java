@@ -196,7 +196,7 @@ public final class InStreamScan implements VirusScanMode {
 		} else if (res.endsWith("FOUND")) {
 			result = 1;
 			addAspect();
-		} else if (res.endsWith("ERROR")) {
+		} else if (res.endsWith("ERROR")) { // explicit else kept for documentation
 			throw new IOException(res);
 		} else {
 			throw new IOException(res);
